@@ -1,0 +1,93 @@
+.changelog-container {
+    margin-top: 2rem;
+    padding: 0 10rem;
+}
+
+.changelog-wrapper .changelog-entry {
+    border-radius: 15px;
+    border: 0.5rem solid antiquewhite;
+    padding: 2.5rem 1.5rem 1.5rem;
+    margin-bottom: 4.5rem;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.changelog-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.date-calendar {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+    text-align: center;
+    min-width: 80px;
+    margin-top: -4rem;
+    border: 2px solid #e0e0e0;
+    margin-right: 1.5rem;
+}
+
+.date-calendar .month {
+    display: block;
+    background: #4a90e2;
+    color: white;
+    padding: 0.2rem;
+    border-radius: 4px 4px 0 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.date-calendar .day {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    padding: 0.2rem;
+}
+
+.date-calendar .year {
+    display: block;
+    color: #666;
+    font-size: 0.8rem;
+    border-top: 1px solid #eee;
+    padding-top: 0.2rem;
+}
+
+.title-wrapper {
+    flex: 1;
+}
+
+.changelog-header h2 {
+    font-size: 2rem;
+    color: #4a90e2;
+    margin-top: -1rem;
+}
+
+.changelog-header h2 a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+/* .changelog-header h2 a:hover {
+    color: #4a90e2;
+} */
+
+.changelog-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-top: 2.5rem;
+}
+
+.changelog-content p {
+    font-size: 0.875rem;
+    color: #777;
+    margin-top: 1.5rem;
+}
