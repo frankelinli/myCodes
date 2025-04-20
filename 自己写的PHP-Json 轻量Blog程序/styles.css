@@ -1,0 +1,95 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #333;
+    --background-color: #f4f4f9;
+    --text-color: #333;
+    --white-color: #fff;
+    --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --border-radius: 5px;
+    --max-width: 800px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 1rem 0;
+    text-align: center;
+}
+
+footer {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    text-align: center;
+    padding: 1rem 0;
+    position: static;
+    bottom: auto;
+    width: auto;
+}
+
+nav a {
+    color: var(--white-color);
+    text-decoration: none;
+    margin: 0 1rem;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+#articles div, #content, form {
+    background: var(--white-color);
+    margin: 1rem auto;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    max-width: var(--max-width);
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+form input, form textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--text-color);
+    border-radius: var(--border-radius);
+}
+
+form button {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+.pagination {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.pagination a {
+    margin: 0 0.5rem;
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+}
