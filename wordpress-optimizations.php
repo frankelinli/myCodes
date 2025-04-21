@@ -1,5 +1,20 @@
 <?php 
-// WordPress优化程序集中在此处
+
+/**
+ * WordPress 优化程序集中在此处。
+ * 
+ * 本文件集中实现了常用的 WordPress 优化措施，包括：
+ * - 禁止被 iframe 调用
+ * - 屏蔽 XML-RPC（可选）
+ * - 禁用 RSS 及相关输出
+ * - 限制文章修订版本数量
+ * - 移除多余的头部信息和 HTTP header
+ * - 禁用 CORS 跨域资源
+ * - 禁止 Google 字体和 Embed
+ * 
+ * 适用于需要极简、提升安全性和性能的 WordPress 站点。
+ */
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
