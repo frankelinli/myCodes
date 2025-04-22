@@ -1,6 +1,10 @@
 <?php
+session_start();
 // 读取文章数据
 $articles = json_decode(file_get_contents('articles.json'), true);
+
+// 让最新文章在最前面
+$articles = array_reverse($articles);
 
 // 分页设置
 $articlesPerPage = 10;
@@ -32,8 +36,8 @@ $currentArticles = array_slice($articles, $startIndex, $articlesPerPage);
     <header>
         <h1>我的博客</h1>
         <nav>
-            <a href="index.php">首页</a> |
-            <a href="new-post.php">发表新文章</a>
+            <a href="index.php">首页</a>
+            <a href="new-post.php">发表新文章</a>            
         </nav>
     </header>
     <div id="articles">

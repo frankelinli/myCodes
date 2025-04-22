@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    die('未登录，无权发文');
+}
+
 // 检查是否通过 POST 方法提交
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 设置返回 JSON 响应的 Content-Type

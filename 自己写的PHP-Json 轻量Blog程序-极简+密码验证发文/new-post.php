@@ -1,3 +1,12 @@
+<?php
+session_start();
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    // 未登录，跳转到login.php，并带上return参数
+    $return = urlencode($_SERVER['REQUEST_URI']);
+    header('Location: login.php?return=' . $return);
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -10,15 +19,16 @@
     <header>
         <h1>发表新文章</h1>
         <nav>
-            <a href="index.php">首页</a> |
+            <a href="index.php">首页</a>
             <a href="new-post.php">发表新文章</a>
+           
         </nav>
     </header>
     <form action="submit-post.php" method="post">
         <label for="title">标题：</label>
         <input type="text" id="title" name="title" required><br>
         <label for="content">内容：</label><br>
-        <textarea id="content" name="content" rows="10" cols="30" required></textarea><br>
+        <textarea id="content" name="content" rows="10" required></textarea><br>
         <button type="submit">提交</button>
     </form>
     <footer>

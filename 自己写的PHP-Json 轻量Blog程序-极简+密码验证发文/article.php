@@ -1,4 +1,5 @@
 <?php
+session_start();
 // 读取文章数据
 $articles = json_decode(file_get_contents('articles.json'), true);
 
@@ -26,8 +27,9 @@ foreach ($articles as $a) {
     <header>
         <h1>文章详情</h1>
         <nav>
-            <a href="index.php">首页</a> |
+            <a href="index.php">首页</a>
             <a href="new-post.php">发表新文章</a>
+           
         </nav>
     </header>
     <div id="content">
