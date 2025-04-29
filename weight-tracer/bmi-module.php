@@ -1,19 +1,13 @@
 <?php
 /**
- * BMI Module - WordPress Integration
- * Automatically calculates BMI for a user with a height of 170cm
+ * BMI模块 - 针对身高170cm的用户自动计算BMI指数
  */
 
-// Exit if accessed directly
-if (!defined('ABSPATH')) {
-    exit;
-}
-
-// Get latest weight record
+// 获取最新体重记录
 $lastWeight = isset($data[0]['weight']) ? $data[0]['weight'] : null;
 $lastWeightDate = isset($data[0]['date']) ? date("Y-m-d", strtotime($data[0]['date'])) : null;
 
-// Calculate BMI (if weight data exists)
+// 计算BMI (如果有体重数据)
 $height = 1.70; // 170cm = 1.70m
 $bmi = null;
 $bmiCategory = '';
@@ -42,10 +36,10 @@ if ($lastWeight) {
         $pointerPosition = 75 + min((($bmi - 28) / 12), 1) * 25;
     }
     
-    // Ensure pointer position is within reasonable range
+    // 确保指针位置在合理范围内
     $pointerPosition = max(0, min(100, $pointerPosition));
     
-    // Calculate difference from ideal weight
+    // 计算与理想体重的差距
     $minHealthyWeight = 18.5 * ($height * $height);
     $maxHealthyWeight = 24 * ($height * $height);
     
@@ -74,7 +68,7 @@ if ($lastWeight) {
     <div class="bmi-category">体重状态: <span id="bmi-category-display" style="color: <?php echo $bmiColor; ?>"><?php echo $bmiCategory ?: '-'; ?></span></div>
   </div>
   
-  <!-- BMI Scale -->
+  <!-- BMI分类图示 -->
   <div class="bmi-scale-container">
     <div class="bmi-scale">
       <div class="bmi-range underweight" title="体重过轻 BMI < 18.5">偏瘦</div>
@@ -87,7 +81,7 @@ if ($lastWeight) {
       <div id="bmi-pointer" class="bmi-pointer" style="left: <?php echo $pointerPosition; ?>%">▼</div>
     </div>
     
-    <!-- BMI Scale Markers -->
+    <!-- BMI标尺刻度 -->
     <div class="bmi-scale-markers">
       <span class="bmi-marker" style="left: 0%">16</span>
       <span class="bmi-marker" style="left: 25%">18.5</span>
@@ -97,18 +91,49 @@ if ($lastWeight) {
     </div>
   </div>
   
+  <!-- 直观的BMI分类详细说明 -->
+  <!-- <div class="bmi-categories-detail">
+    <h4>BMI分类详解</h4>
+    <div class="bmi-categories-grid">
+      <div class="bmi-category-card underweight">
+        <div class="bmi-category-header">偏瘦</div>
+        <div class="bmi-category-value">BMI < 18.5</div>
+        <div class="bmi-category-icon">🙍</div>
+        <div class="bmi-category-advice">建议适当增重，增加营养摄入</div>
+      </div>
+      <div class="bmi-category-card normal">
+        <div class="bmi-category-header">正常</div>
+        <div class="bmi-category-value">BMI 18.5-24</div>
+        <div class="bmi-category-icon">🧍</div>
+        <div class="bmi-category-advice">健康范围，注意保持平衡饮食</div>
+      </div>
+      <div class="bmi-category-card overweight">
+        <div class="bmi-category-header">超重</div>
+        <div class="bmi-category-value">BMI 24-28</div>
+        <div class="bmi-category-icon">🧍‍♂️</div>
+        <div class="bmi-category-advice">建议控制饮食，适量运动</div>
+      </div>
+      <div class="bmi-category-card obese">
+        <div class="bmi-category-header">肥胖</div>
+        <div class="bmi-category-value">BMI > 28</div>
+        <div class="bmi-category-icon">🧍‍♀️</div>
+        <div class="bmi-category-advice">增加运动，严格控制饮食</div>
+      </div>
+    </div>
+  </div> -->
+
   <div class="bmi-info">
     <p>理想体重范围: <strong>53.5kg - 69.4kg</strong> (BMI 18.5-24)</p>
     <p>距离理想体重: <span id="weight-diff"><?php echo isset($weightDiffText) ? $weightDiffText : '计算中...'; ?></span></p>
   </div>
 
-  <?php if (count($data) > 1): // Only show history chart toggle when multiple records exist ?>
+  <?php if (count($data) > 1): // 只有当有多条记录时才显示历史图表选项 ?>
   <div class="bmi-history-toggle">
     <button id="toggle-bmi-history">查看BMI历史变化</button>
   </div>
   
   <div id="bmi-history-chart" class="bmi-history-chart" style="display: none;">
-    <!-- BMI history chart will display here -->
+    <!-- BMI历史图表将在这里显示 -->
   </div>
   <?php endif; ?>
 </div>

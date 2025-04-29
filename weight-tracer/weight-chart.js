@@ -1,55 +1,58 @@
 /**
- * Weight Chart Script - WordPress Integration
- * Depends on: Chart.js
+ * 体重趋势折线图脚本
+ * 依赖: Chart.js 库
  */
-(function($) {
-    // Wait for DOM and Chart.js to fully load
-    $(document).ready(function() {
-        console.log('DOM loaded, preparing to initialize chart');
+(function() {
+    // 等待DOM和Chart.js完全加载
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM已加载，准备初始化图表');
         
-        // Make sure Chart.js is loaded
+        // 确保Chart.js已加载
         if (typeof Chart === 'undefined') {
-            console.error('Chart.js not loaded!');
+            console.error('Chart.js未加载!');
             return;
         }
         
-        // Make sure data is loaded
+        // 确保数据已加载
         if (typeof window.weightChartData === 'undefined' || !Array.isArray(window.weightChartData)) {
-            console.error('Weight data not correctly loaded!', typeof window.weightChartData);
+            console.error('体重数据未正确加载!', typeof window.weightChartData);
             return;
         }
         
-        // Get canvas element
+        // 确认数据内容
+        console.log('准备处理数据:', window.weightChartData);
+        
+        // 获取画布元素
         const ctx = document.getElementById('weightChart');
         if (!ctx) {
-            console.error('Cannot find chart canvas element #weightChart');
+            console.error('找不到图表画布元素 #weightChart');
             return;
         }
         
-        console.log('Found canvas element:', ctx);
+        console.log('找到画布元素:', ctx);
         
-        // Prepare data - reverse to show in chronological order
+        // 准备数据 - 反转数据以按时间顺序显示
         const chartData = [...window.weightChartData].reverse();
         const dates = chartData.map(item => item.date);
         const weights = chartData.map(item => item.weight);
         
-        console.log('Processed data:', {dates, weights});
+        console.log('处理后的数据:', {dates, weights});
         
-        // Check for valid data
+        // 检查是否有有效数据
         if (weights.length === 0 || dates.length === 0) {
-            console.error('No valid chart data points');
+            console.error('没有有效的图表数据点');
             return;
         }
         
-        // Determine Y axis range
-        const minWeight = Math.min(...weights.filter(w => w > 0));
+        // 确定Y轴范围
+        const minWeight = Math.min(...weights);
         const maxWeight = Math.max(...weights);
         const range = maxWeight - minWeight;
-        const padding = Math.max(1, range * 0.2); // At least 1kg padding or 20% of range
+        const padding = Math.max(1, range * 0.2); // 至少1kg的padding，或range的20%
         
-        console.log('Creating chart...');
+        console.log('创建图表...');
         
-        // Create chart
+        // 创建图表
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -107,6 +110,6 @@
             }
         });
         
-        console.log('Chart creation complete');
+        console.log('图表创建完成');
     });
-})(jQuery);
+})();

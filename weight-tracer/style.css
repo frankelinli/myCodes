@@ -1,0 +1,236 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.2em;
+}
+
+input[type="number"], input[type="text"] {
+    font-size: 1em;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+button {
+    font-size: 1em;
+    padding: 10px 10px;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .container > div {
+        flex: 1;
+        margin: 0 10px;
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* 去掉双框 */
+    text-align: center;
+}
+
+th, td {
+    border: 1px solid #ddd; /* 添加单框 */
+    padding: 8px;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* 修改表格样式，设置两行一组的背景色，颜色更亮 */
+tr:nth-child(4n-3), tr:nth-child(4n-2) {
+    background-color: hsla(192, 42%, 95%, 0.595); /* 浅蓝色 */
+}
+
+tr:nth-child(4n-1), tr:nth-child(4n) {
+    background-color: #ffffff; /* 白色 */
+}
+
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    background-color: #f5f9ff;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 800px;
+}
+
+.progress-item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.progress-bar {
+    height: 5px;
+    background-color: #eee;
+    position: relative;
+    margin: 0 10px;
+    flex: 3;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #5bc0de;
+    border-radius: 2px;
+}
+
+.progress-fill.completed {
+    background-color: #5cb85c;
+}
+
+.progress-marker {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #5bc0de;
+    position: absolute;
+    top: -5px;
+}
+
+.progress-marker.start {
+    left: 0;
+}
+
+.progress-marker.current {
+    background-color: #337ab7;
+    z-index: 2;
+}
+
+.progress-marker.target {
+    background-color: #036d1c;
+    right: 0;
+}
+
+.progress-text {
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+
+ /* 新增样式 */
+        .auth-form {
+            max-width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .auth-form input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        .auth-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .auth-form button:hover {
+            background-color: #45a049;
+        }
+        .auth-error {
+            color: red;
+            margin-bottom: 10px;
+        }
+        .auth-status {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .auth-status a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .auth-status a:hover {
+            text-decoration: underline;
+        }
+        /* 禁用状态的输入框样式 */
+        input[disabled] {
+            background-color: #f0f0f0;
+            color: #888;
+            border: 1px solid #ddd;
+        }
+        
+        
+h1 {
+    text-align: left;
+    width: 100%;
+    color: green;
+}
+
+.site-description {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #9f9c9c;
+}
+
+
+/* 标题和描述同行显示的样式 */
+header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* 在小屏幕上允许换行 */
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+    margin-right: 15px; /* 标题和描述之间的间距 */
+    white-space: nowrap; /* 防止标题换行 */
+}
+
+header .site-description {
+    margin: 0;
+    font-style: italic;
+    color: #666;
+    font-size: 1rem; /* 调整描述文字大小 */
+}
+
+/* 响应式设计：在小屏幕上换行显示 */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    header h1 {
+        margin-bottom: 5px;
+    }
+}
+
+
+

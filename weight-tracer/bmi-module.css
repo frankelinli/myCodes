@@ -1,0 +1,281 @@
+/* BMI模块样式 */
+.bmi-calculator {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 500px;
+  }
+  
+  .bmi-calculator h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .bmi-calculator h3 small {
+    font-weight: normal;
+    color: #666;
+    font-size: 0.8em;
+  }
+  
+  .current-weight-display {
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .weight-info {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .date-info {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .bmi-result {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    border-left: 4px solid #5bc0de;
+    transition: border-left-color 0.3s ease;
+  }
+  
+  .bmi-value, .bmi-category {
+    font-size: 16px;
+  }
+  
+  .bmi-value span, .bmi-category span {
+    font-weight: bold;
+  }
+  
+  /* BMI分类图示容器 */
+  .bmi-scale-container {
+    margin: 20px 0;
+    position: relative;
+    padding-bottom: 25px; /* 为刻度留出空间 */
+  }
+  
+  .bmi-scale {
+    display: flex;
+    height: 30px;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .bmi-pointer-container {
+    position: relative;
+    height: 20px;
+    margin-top: 2px;
+  }
+  
+  .bmi-pointer {
+    position: absolute;
+    font-size: 16px;
+    top: -5px;
+    transform: translateX(-50%);
+    transition: left 0.5s ease;
+    color: #333;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  .bmi-range {
+    flex: 1;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  
+  .bmi-range.underweight {
+    background-color: #5bc0de; /* 蓝色 - 偏瘦 */
+  }
+  
+  .bmi-range.normal {
+    background-color: #5cb85c; /* 绿色 - 正常 */
+  }
+  
+  .bmi-range.overweight {
+    background-color: #f0ad4e; /* 黄色 - 超重 */
+  }
+  
+  .bmi-range.obese {
+    background-color: #d9534f; /* 红色 - 肥胖 */
+  }
+  
+  /* BMI刻度标记 */
+  .bmi-scale-markers {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .bmi-marker {
+    position: absolute;
+    transform: translateX(-50%);
+  }
+  
+  /* BMI分类详细卡片 */
+  .bmi-categories-detail {
+    margin: 25px 0 15px 0;
+    border-top: 1px dashed #ddd;
+    padding-top: 15px;
+  }
+  
+  .bmi-categories-detail h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #555;
+    text-align: center;
+  }
+  
+  .bmi-categories-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .bmi-category-card {
+    width: calc(50% - 5px);
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+  }
+  
+  .bmi-category-header {
+    padding: 8px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .bmi-category-card.underweight .bmi-category-header {
+    background-color: #5bc0de;
+  }
+  
+  .bmi-category-card.normal .bmi-category-header {
+    background-color: #5cb85c;
+  }
+  
+  .bmi-category-card.overweight .bmi-category-header {
+    background-color: #f0ad4e;
+  }
+  
+  .bmi-category-card.obese .bmi-category-header {
+    background-color: #d9534f;
+  }
+  
+  .bmi-category-value {
+    padding: 5px;
+    text-align: center;
+    font-size: 14px;
+    background-color: rgba(0,0,0,0.03);
+  }
+  
+  .bmi-category-icon {
+    font-size: 24px;
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  .bmi-category-advice {
+    padding: 8px;
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+    border-top: 1px solid #eee;
+  }
+  
+  .bmi-info {
+    font-size: 14px;
+    color: #666;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+  }
+  
+  .bmi-info p {
+    margin: 5px 0;
+  }
+  
+  .bmi-history-toggle {
+    margin: 15px 0;
+    text-align: center;
+  }
+  
+  .bmi-history-toggle button {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .bmi-history-toggle button:hover {
+    background-color: #e9ecef;
+  }
+  
+  .bmi-history-chart {
+    height: 200px;
+    margin-top: 15px;
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  #weight-diff {
+    font-weight: bold;
+  }
+  
+  /* 移动设备响应式调整 */
+  @media (max-width: 500px) {
+    .current-weight-display {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .date-info {
+      margin-top: 5px;
+    }
+    
+    .bmi-result {
+      flex-direction: column;
+    }
+    
+    .bmi-category {
+      margin-top: 5px;
+    }
+    
+    .bmi-categories-grid {
+      flex-direction: column;
+    }
+    
+    .bmi-category-card {
+      width: 100%;
+    }
+  }
