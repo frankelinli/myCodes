@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>休息规则可视化</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .rule-container {
+            margin-bottom: 40px;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+        }
+        .calendar {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .day {
+            width: calc(100% / 7);
+            box-sizing: border-box;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            position: relative;
+        }
+        .work {
+            background-color: #f0f0f0;
+        }
+        .rest {
+            background-color: #a7e3a7;
+        }
+        .number {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            font-size: 10px;
+            color: #666;
+        }
+        .example-container {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .correct-example {
+            border-color: #2ecc71;
+        }
+        .wrong-example {
+            border-color: #e74c3c;
+        }
+        .status-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .correct-badge {
+            background-color: #2ecc71;
+        }
+        .wrong-badge {
+            background-color: #e74c3c;
+        }
+        .example-title {
+            font-weight: bold;
+            margin: 5px 0 15px 0;
+            font-size: 1.1em;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .highlight {
+            background-color: #ffcccc;
+        }
+        .warning {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .arrow {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 24px;
+            color: #3498db;
+        }
+        .check-icon {
+            color: #2ecc71;
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .wrong-icon {
+            color: #e74c3c;
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        @media (max-width: 600px) {
+            .day {
+                height: 40px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>休息规则图示</h1>
+    </div>
+
+    <div class="rule-container">
+        <h2>规则说明：</h2>
+        <ol>
+            <li>每7天至少要有1天休息</li>
+            <li>任意连续7天内必须至少有1天休息</li>
+            <li>首尾休息不符合规则：如果只有第1天和第14天休息，中间12天连续工作，这违反了规则</li>
+        </ol>
+    </div>
+
+    <div class="example-container correct-example">
+        <div class="status-badge correct-badge">✓ 正确</div>
+        <div class="example-title">
+            <span class="check-icon">✓</span>
+            正确示例：任意连续7天内有休息
+        </div>
+        <div class="calendar">
+            <div class="day work"><span class="number">1</span>工作</div>
+            <div class="day work"><span class="number">2</span>工作</div>
+            <div class="day rest"><span class="number">3</span>休息</div>
+            <div class="day work"><span class="number">4</span>工作</div>
+            <div class="day work"><span class="number">5</span>工作</div>
+            <div class="day work"><span class="number">6</span>工作</div>
+            <div class="day work"><span class="number">7</span>工作</div>
+            <div class="day work"><span class="number">8</span>工作</div>
+            <div class="day work"><span class="number">9</span>工作</div>
+            <div class="day rest"><span class="number">10</span>休息</div>
+            <div class="day work"><span class="number">11</span>工作</div>
+            <div class="day work"><span class="number">12</span>工作</div>
+            <div class="day work"><span class="number">13</span>工作</div>
+            <div class="day work"><span class="number">14</span>工作</div>
+        </div>
+        <div class="explanation">
+            <p><span class="check-icon">✓</span>在这个例子中，第3天和第10天休息，确保了任意连续7天内都至少有1天休息。</p>
+            <p><span class="check-icon">✓</span>第1-7天：包含第3天休息</p>
+            <p><span class="check-icon">✓</span>第4-10天：包含第10天休息</p>
+            <p><span class="check-icon">✓</span>第8-14天：包含第10天休息</p>
+        </div>
+    </div>
+
+    <div class="example-container wrong-example">
+        <div class="status-badge wrong-badge">✗ 错误</div>
+        <div class="example-title">
+            <span class="wrong-icon">✗</span>
+            错误示例：第1天和第14天休息，中间12天连续工作
+        </div>
+        <div class="calendar">
+            <div class="day rest"><span class="number">1</span>休息</div>
+            <div class="day work highlight"><span class="number">2</span>工作</div>
+            <div class="day work highlight"><span class="number">3</span>工作</div>
+            <div class="day work highlight"><span class="number">4</span>工作</div>
+            <div class="day work highlight"><span class="number">5</span>工作</div>
+            <div class="day work highlight"><span class="number">6</span>工作</div>
+            <div class="day work highlight"><span class="number">7</span>工作</div>
+            <div class="day work highlight"><span class="number">8</span>工作</div>
+            <div class="day work highlight"><span class="number">9</span>工作</div>
+            <div class="day work highlight"><span class="number">10</span>工作</div>
+            <div class="day work highlight"><span class="number">11</span>工作</div>
+            <div class="day work highlight"><span class="number">12</span>工作</div>
+            <div class="day work highlight"><span class="number">13</span>工作</div>
+            <div class="day rest"><span class="number">14</span>休息</div>
+        </div>
+        <div class="explanation">
+            <p class="warning"><span class="wrong-icon">✗</span>这违反了规则！</p>
+            <p><span class="wrong-icon">✗</span>虽然第1天和第14天有休息，但从第2天到第13天有12天连续工作，没有休息日。</p>
+            <p><span class="wrong-icon">✗</span>例如，第2-8天这7天内没有任何休息日，违反了"任意连续7天必须至少有1天休息"的规则。</p>
+            <p><span class="wrong-icon">✗</span>同样，第8-14天虽然第14天休息，但因为是首尾休息，实际上第8-13这6天没有满足要求。</p>
+        </div>
+    </div>
+
+    
+</body>
+</html>
