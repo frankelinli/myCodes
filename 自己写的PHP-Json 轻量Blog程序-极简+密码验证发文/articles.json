@@ -58,5 +58,10 @@
         "title": "测试",
         "content": "今天去干吗了",
         "date": "2025-04-29 13:08:28"
+    },
+    {
+        "title": "\/\/ 读取文章数据",
+        "content": "<?php\r\nsession_start();\r\n\/\/ 读取文章数据\r\n$articles = json_decode(file_get_contents('articles.json'), true);\r\n\r\n\/\/ 让最新文章在最前面\r\n$articles = array_reverse($articles);\r\n",
+        "date": "2025-09-13 13:35:19"
     }
 ]

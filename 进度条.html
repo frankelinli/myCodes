@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>示例APP</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #f0f0f0;
+    }
+    .window {
+      width: 400px;
+      background: white;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      padding: 15px;
+      margin: 100px auto;
+    }
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .status {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .progress-container {
+      width: 100%;
+      height: 25px;
+      background: #eee;
+      border: 1px solid #aaa;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #28a745;
+      transition: width 0.2s;
+    }
+    .buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    button {
+      padding: 5px 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="window">
+    <div class="title">示例APP</div>
+    <div class="status" id="status">正在更新标签...</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="buttons">
+      <button id="cancelBtn">取消</button>
+      <button id="detailBtn">显示详细信息</button>
+    </div>
+  </div>
+
+  <script>
+    let progress = 0;
+    let interval;
+    let cancelled = false;
+
+    function startProgress() {
+      interval = setInterval(() => {
+        if (cancelled) {
+          document.getElementById("status").innerText = "操作已取消";
+          clearInterval(interval);
+          return;
+        }
+        if (progress >= 100) {
+          document.getElementById("status").innerText = "操作完成！";
+          clearInterval(interval);
+          return;
+        }
+        progress++;
+        document.getElementById("progress").style.width = progress + "%";
+      }, 50);
+    }
+
+    document.getElementById("cancelBtn").addEventListener("click", () => {
+      cancelled = true;
+    });
+
+    document.getElementById("detailBtn").addEventListener("click", () => {
+      alert("这里显示详细信息，例如日志、进度说明等。");
+    });
+
+    startProgress();
+  </script>
+</body>
+</html>
