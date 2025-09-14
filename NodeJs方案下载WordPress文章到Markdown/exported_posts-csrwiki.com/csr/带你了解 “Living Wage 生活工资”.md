@@ -1,0 +1,57 @@
+---
+id: 2315
+title: 带你了解 “Living Wage 生活工资”
+date: '2024-03-11T22:53:44'
+author: weizhan
+categories:
+  - csr
+tags: []
+url: https://csrwiki.com/csr/let-me-introduce-you-to-living-wage
+featured_image: https://csrwiki.com/wp-content/uploads/2024/03/image-12.png
+---
+
+BSCI，Sedex，SA8000等几乎每一个社会责任验厂，都在使用生活工资(Living Wage) 这个概念，而且成为检查清单的一部分，如果工厂支付的工资低于生活工资的数值，就会被认为一个不符合项。
+
+***
+
+## 生活工资( Living Wage)的定义：
+
+> 工人在标准工作周（或月）内获得的足以负担体面生活水平的报酬包括食物、水、住房、教育、医疗保健、交通、衣服和其他基本需求，包括应对突发事件的准备。
+
+读起来有点绕脑。翻译下来是：一个人在一个月内，只靠5天8小时内的收入，足以支撑他和家人稳定体面的生活。
+
+这个数值包含基本工资，补贴、奖金等，不包括加班费，还要扣掉社保中个人承担的部分。
+
+生活工资的数值，与政府公布的最低工资标准，是不同的概念，而且，生活工资比法定最低工资高出不少。
+
+***
+
+## 生活工资是如何计算的?
+
+生活工资(Living Wage) 在实际操作中，并没有一个统一的数值，甚至计算方法都没有统一。目前社会责任标准和验厂机构，在计算生活工资时，采用的比较广泛的是Anker计算方法和数据。
+
+![](https://csrwiki.com/wp-content/uploads/2024/03/image-11-1024x367.png)
+
+Anker 方法是一种被广泛接受和发布的新方法，用于估算生活工资，描述了一种新的方法来衡量不同国家体面但基本的生活水平，以及工人需要赚多少钱来养活自己和家人。这些信息使研究人员能够估计世界各地可比的生活工资，并确定生活工资与现行工资之间的差距。它由生活工资专家 Richard Anker（前国际劳工组织）和 Martha Anker（前世界卫生组织）开发。（2个人是夫妻档）
+
+***
+
+## GLWC (Global Living Wage Coalition)全球生活工资联盟
+
+![](https://csrwiki.com/wp-content/uploads/2024/03/image-12.png)
+
+GLWC (Global Living Wage Coalition)全球生活工资联盟，在Anker基础上，公布了全球多个多家、多个城市的“生活工资”，包含中国的6个城市，按照它公布的生活工资数值，从高到低依次为：上海、杭州、苏州、深圳、郑州、成都。
+
+![](https://csrwiki.com/wp-content/uploads/2024/03/image-13.png)
+
+从直观感觉上，您觉得这个数据与实际观感符合吗？就是说，不算加班费和扣除社保的情况下，你的每月工资要达到以上数字，才是合规的。
+
+GLWC计算和公布的城市只有6个，全球也只有49个城市的数据。那么其他城市的生活工资数值是多少呢？不同认证机构就各显神通，有的机构认真考据，调查物价水平、家庭平均人口、家庭可支配收入等等；有的认证机构比较随意、囫囵吞枣地造一个生活工资数据。甚至同一个认证机构不同审核员使用的生活工资数据都是不一致的。
+
+于是在生活工资数据的乱象中，大多数工厂在验厂中都被开出一个不符合项：支付的生活工资不足。
+
+参考资源：
+
+GLWC研究的中国的6个城市生活工资：网址：https\://www\.globallivingwage.org/resource-library/?fwp\_country=china
+
+Anker研究院：https\://www\.ankerresearchinstitute.org

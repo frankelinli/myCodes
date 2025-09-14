@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkStringify from "remark-stringify";
 import yaml from "js-yaml";
 
-const API_URL = "https://haoyelaiga.com/wp-json/wp/v2";
+const API_URL = "https://csrwiki.com/wp-json/wp/v2";
 const SAVE_DIR = "./exported_posts";
 
 fs.mkdirSync(SAVE_DIR, { recursive: true });
@@ -22,6 +22,10 @@ async function getAll(endpoint) {
   while (true) {
     const res = await fetch(`${API_URL}/${endpoint}?per_page=100&page=${page}`);
     if (!res.ok) {
+      if (res.status === 400) {
+        // 400 说明已到最后一页，正常结束循环
+        break;
+      }
       console.warn(`⚠️ 请求失败: ${endpoint}, 状态码 ${res.status}`);
       break;
     }
@@ -103,6 +107,9 @@ async function main() {
       featuredImage = media[post.featured_media] || null;
     }
 
+    // 文章URL
+    const postUrl = post.link || '';
+
     const frontMatter = {
       id: postId,
       title: title,
@@ -110,6 +117,7 @@ async function main() {
       author: authorName,
       categories: postCategories,
       tags: postTags,
+      url: postUrl,
     };
     if (featuredImage) {
       frontMatter.featured_image = featuredImage;
@@ -119,8 +127,13 @@ async function main() {
       `---\n${yaml.dump(frontMatter, { skipInvalid: true, lineWidth: -1 })}---\n\n` +
       contentMd;
 
+    // 以第一个分类为主目录，若无分类则放 uncategorized
+    const mainCategory = postCategories[0] || "uncategorized";
+    const categoryDir = path.join(SAVE_DIR, sanitizeFilename(mainCategory));
+    fs.mkdirSync(categoryDir, { recursive: true });
+
     const safeTitle = sanitizeFilename(title);
-    const filename = path.join(SAVE_DIR, `${safeTitle}.md`);
+    const filename = path.join(categoryDir, `${safeTitle}.md`);
     fs.writeFileSync(filename, mdContent, "utf-8");
 
     console.log(`✅ 已保存: ${filename}`);

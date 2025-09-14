@@ -16,17 +16,48 @@ import matter from 'gray-matter';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
+// 移除 remark-admonitions，改为自定义实现以避免 ESM/CJS 兼容问题
 import rehypeStringify from 'rehype-stringify';
+import remarkDirective from 'remark-directive';
+import { visit } from 'unist-util-visit';
 import { parse as parseHTML } from 'node-html-parser';
 import mime from 'mime';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ====== 配置区 ======
-const SITE = process.env.WP_SITE || 'https://csrwiki.com';
-const USER = process.env.WP_USER || 'weizhan';
-const APP_PASS = process.env.WP_APP_PASS || 'zwBscciRRVsJxecwiWVjfZfw'; // 建议用环境变量
+// ====== 配置区 (.env) ======
+// 自定义轻量 .env 解析（避免额外依赖 dotenv）
+// 1) 在根目录创建 .env 文件，例如：
+//    WP_SITE=https://csrwiki.com
+//    WP_USER=youruser
+//    WP_APP_PASS=application-password-here
+// 2) 运行 node publish.js posts/xxx.md
+// 解析规则：忽略 # 开头行；支持 KEY=VALUE（不处理引号/转义/多行）。
+const envFile = path.join(process.cwd(), '.env');
+if (fs.existsSync(envFile)) {
+  const lines = fs.readFileSync(envFile, 'utf8').split(/\r?\n/);
+  for (const line of lines) {
+    if (!line || /^\s*#/.test(line)) continue;
+    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (!m) continue;
+    const key = m[1];
+    let val = m[2];
+    // 去掉首尾引号（简单处理）
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
+    if (process.env[key] === undefined) process.env[key] = val;
+  }
+}
+
+const SITE = process.env.WP_SITE;
+const USER = process.env.WP_USER;
+const APP_PASS = process.env.WP_APP_PASS;
+if (!SITE || !USER || !APP_PASS) {
+  console.error('[配置错误] 缺少 WP_SITE / WP_USER / WP_APP_PASS 环境变量，请在 .env 中设置');
+  process.exit(1);
+}
 const API_BASE = `${SITE.replace(/\/+$/, '')}/wp-json/wp/v2`;
 const AUTH = 'Basic ' + Buffer.from(`${USER}:${APP_PASS}`).toString('base64');
 
@@ -124,12 +155,18 @@ async function processImagesAndReturnHTML(html, baseDir) {
   const imgNodes = root.querySelectorAll('img');
 
   for (const img of imgNodes) {
-    const src = img.getAttribute('src');
-    if (!isLocalRelativeImage(src)) continue;
-
-    const absPath = ensureAbsolute(src, baseDir);
+    const rawSrc = img.getAttribute('src');
+    if (!isLocalRelativeImage(rawSrc)) continue;
+    // 处理 URL 编码与 Windows 反斜杠
+    let decoded = rawSrc;
+    try { decoded = decodeURIComponent(rawSrc); } catch (_) {}
+    // 将类似 C:%5CUsers%5C... 或含反斜杠统一成正常路径
+    decoded = decoded.replace(/%5C/gi, '\\');
+    // 若是 file:/// 开头，去掉协议
+    decoded = decoded.replace(/^file:\/+/, '');
+    const absPath = ensureAbsolute(decoded, baseDir);
     if (!absPath || !fs.existsSync(absPath)) {
-      console.warn(`图片文件不存在，跳过：${src}`);
+      console.warn(`图片文件不存在，跳过：${rawSrc}`);
       continue;
     }
     try {
@@ -147,9 +184,47 @@ async function processImagesAndReturnHTML(html, baseDir) {
   return root.toString();
 }
 
+// 自定义 Admonition 解析插件，支持 :::tip / :::warning[标题] 语法
+function remarkAdmonitionBlocks() {
+  const TYPES = new Set(['tip','note','info','warning','caution','danger','important','success']);
+  return (tree) => {
+    visit(tree, (node) => {
+      if (node.type !== 'containerDirective') return;
+      const type = (node.name || '').toLowerCase();
+      if (!TYPES.has(type)) return;
+
+      let titleText = node.label || '';
+      if (!titleText && node.children && node.children.length) {
+        const first = node.children[0];
+        if (first.type === 'paragraph' && first.children) {
+          const textNode = first.children.find(c => c.type === 'text' && c.value && c.value.trim());
+          if (textNode) {
+            titleText = textNode.value.trim();
+            // 移除第一段作为正文避免重复标题
+            node.children.shift();
+          }
+        }
+      }
+      if (!titleText) {
+        titleText = type.charAt(0).toUpperCase() + type.slice(1);
+      }
+      const data = node.data || (node.data = {});
+      data.hName = 'div';
+      data.hProperties = { class: `admonition admonition-${type}` };
+      node.children.unshift({
+        type: 'paragraph',
+        data: { hName: 'p', hProperties: { class: 'admonition-title' } },
+        children: [{ type: 'text', value: titleText }]
+      });
+    });
+  };
+}
+
 async function markdownToHTML(md) {
   const file = await unified()
     .use(remarkParse)
+    .use(remarkDirective)
+    .use(remarkAdmonitionBlocks)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(md);

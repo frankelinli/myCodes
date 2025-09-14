@@ -42,7 +42,7 @@
   <div id="result"></div>
 
   <script>
-    const WP_API = "https://你的域名/wp-json"; // ⚠️ 换成你的 WordPress 域名
+    const WP_API = "https://csrwiki.com/wp-json"; // ⚠️ 换成你的 WordPress 域名
     let token = null;
 
     // 获取最新文章
