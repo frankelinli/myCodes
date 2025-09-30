@@ -1,0 +1,21 @@
+---
+id: 4228
+title: Sedex验厂费用分析
+slug: sedex-smeta-audit-fee-analyse
+date: '2024-06-02T22:18:44'
+categories:
+  - sedex
+tags:
+  - doc
+url: https://csrwiki.com/sedex/sedex-smeta-audit-fee-analyse
+---
+
+### 2024 年9月 增加0.5天报告撰写费
+
+Sedex验厂要求审核公司在原有的审核时间基础上提供 0.5 人天撰写报告, 以保证报告的质量，同时增加0.5人天的报告费。
+
+### 2024 年 7 月 管理费涨到150英镑
+
+2024 年 7 月 1 日起，SMETA验厂管理费，将变更为每次 150 英镑。这比2023年的80英镑，涨价幅度将近一倍。
+
+新版 SMETA，即 SMETA 7 即将在今年推出，它是对可持续供应链评估方法论的重大更新，该版本 SMETA 审核贯彻和融入了“工作场所要求”以及“管理体系”，将审核的重点从合规转向持续改善与尽责管理。

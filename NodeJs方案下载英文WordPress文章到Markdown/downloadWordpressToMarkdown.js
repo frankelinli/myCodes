@@ -8,7 +8,9 @@ import remarkGfm from "remark-gfm";
 import remarkStringify from "remark-stringify";
 import yaml from "js-yaml";
 
-const API_URL = "https://haoyelaiga.com/wp-json/wp/v2";
+const API_URL = "https://csrwiki.com/wp-json/wp/v2";
+// Polylang 语言代码（仅抓取指定语言内容）
+const LANG = "en"; // 如需切换，请改为 "zh" 等
 const SAVE_DIR = "./exported_posts";
 
 fs.mkdirSync(SAVE_DIR, { recursive: true });
@@ -16,11 +18,15 @@ fs.mkdirSync(SAVE_DIR, { recursive: true });
 /**
  * 分页抓取 WordPress API
  */
-async function getAll(endpoint) {
+async function getAll(endpoint, query = {}) {
   let page = 1;
   const items = [];
   while (true) {
-    const res = await fetch(`${API_URL}/${endpoint}?per_page=100&page=${page}`);
+    const searchParams = new URLSearchParams({ per_page: "100", page: String(page) });
+    for (const [k, v] of Object.entries(query)) {
+      if (v !== undefined && v !== null) searchParams.append(k, String(v));
+    }
+    const res = await fetch(`${API_URL}/${endpoint}?${searchParams.toString()}`);
     if (!res.ok) {
       if (res.status === 400) {
         // 400 说明已到最后一页，正常结束循环
@@ -67,21 +73,21 @@ function sanitizeFilename(filename) {
  */
 async function main() {
   console.log("🔍 获取分类和标签...");
-  const categoriesArr = await getAll("categories");
+  const categoriesArr = await getAll("categories", { lang: LANG });
   const categories = {};
   categoriesArr.forEach((c) => (categories[c.id] = c.slug));
 
-  const tagsArr = await getAll("tags");
+  const tagsArr = await getAll("tags", { lang: LANG });
   const tags = {};
   tagsArr.forEach((t) => (tags[t.id] = t.slug));
 
   // 去掉作者处理，不再请求 users
 
   console.log("🔍 获取文章...");
-  const posts = await getAll("posts");
+  const posts = await getAll("posts", { lang: LANG });
 
   console.log("🔍 获取媒体...");
-  const mediaArr = await getAll("media");
+  const mediaArr = await getAll("media", { lang: LANG });
   const media = {};
   mediaArr.forEach((m) => (media[m.id] = m.source_url));
 
@@ -113,6 +119,7 @@ async function main() {
       title: title,
       slug: slug,
       date: date,
+      language: LANG,
       categories: postCategories,
       tags: postTags,
       url: postUrl,

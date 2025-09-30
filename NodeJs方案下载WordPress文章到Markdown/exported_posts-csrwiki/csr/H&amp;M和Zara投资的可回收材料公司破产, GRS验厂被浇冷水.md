@@ -1,0 +1,31 @@
+---
+id: 2287
+title: H&amp;M和Zara投资的可回收材料公司破产, GRS验厂被浇冷水
+slug: h-bankruptcy-of-recyclable-materials-company-invested-by-m-and-zara
+date: '2024-03-10T21:50:34'
+categories:
+  - csr
+tags: []
+url: https://csrwiki.com/csr/h-bankruptcy-of-recyclable-materials-company-invested-by-m-and-zara
+featured_image: https://csrwiki.com/wp-content/uploads/2024/03/image-3.png
+---
+
+过去两三年内，GRS（全球可回收材料标准）验厂逐渐热了起来，不少布料厂和成衣制造厂在欧美客户的要求下，接受了GRS验厂。这与欧美推行的可持续回收材料和保护环境的概念密切相关，属于“概念股”，“概念车型”。
+
+然而，“概念股”不是绩优股，“概念车”不是量产车，只是前卫和创意的展示。
+
+2024年刚进入到2月份，可回收材料的概念被当头交了冷水，H\&M和Zara长期支持的瑞士纺织品回收公司 Renewcell申请破产。
+
+瑞士纺织品回收公司 Renewcell 的长期支持者包括 H\&M 集团和法国巴黎银行，也与包括 Inditex、Levi’s 和 Ganni 在内的时尚品牌保持着良好的合作关系。这家公司长期以来被视为最有希望实现新材料规模化生产的可持续环保公司，然而 Renewcell 在2024年2月正式申请破产，斯德哥尔摩地方法院已经批准破产申请。
+
+![](https://csrwiki.com/wp-content/uploads/2024/03/image-4-624x247.png)
+
+“Renewcell”）开发了一种专利工艺，可以回收纤维素纺织废料，例如破旧的棉质衣服和生产废料，将其转化为一种名为 CIRCULOSE® 的原始新材料。
+
+这家屡获殊荣的瑞典可持续科技公司由斯德哥尔摩 KTH 皇家理工学院的创新者于 2012 年创立，其愿景是让时尚循环发展。
+
+通过其专利工艺，Renewcell 能够回收纤维素纺织废料，例如破旧的棉质衣服和生产废料，将其转化为一种名为 CIRCULOSE® 的原始新材料。 
+
+随着服装品牌支持依赖的可回收材料公司的破产，GRS、OCS、RCS等一众“可回收材料”验厂标准的热度会受到影响吗？
+
+> 品牌和创新初创公司都可以选择从 Renewcell 的错误中吸取教训，而不是被它的失败而吓跑。但后者的可能性很大，品牌和供应商现在可能会因为新材料固有的不确定性而回避对新材料的投资。

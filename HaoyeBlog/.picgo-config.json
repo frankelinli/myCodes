@@ -1,0 +1,17 @@
+{
+	"picBed": {
+		"current": "tcyun",
+		"tcyun": {
+			"secretId": "AKIDRmx87mMly0rVwARVL9nHYcUN2V1QjpjO",
+			"secretKey": "XqzylNkvufCctvpWmtoaBaliHfojT1MS",
+			"bucket": "haoyeblog-1319658309",
+			"appId": "1319658309",
+			"area": "ap-guangzhou",
+			"path": "",
+			"customUrl": "https://images.haoyelaiga.com",
+			"version": "v5"
+		}
+	},
+	
+	"picgoPlugins": {}
+}

@@ -1,0 +1,17 @@
+{
+	"picBed": {
+		"current": "tcyun",
+		"tcyun": {
+			"secretId": "AKIDRmx87mMly0rVwARVL9nHYcUN2V1QjpjO",
+			"secretKey": "XqzylNkvufCctvpWmtoaBaliHfojT1MS",
+			"bucket": "csrwiki-1319658309",
+			"appId": "1319658309",
+			"area": "ap-guangzhou",
+			"path": "",
+			"customUrl": "https://csrwiki-1319658309.cos.ap-guangzhou.myqcloud.com",
+			"version": "v5"
+		}
+	},
+	
+	"picgoPlugins": {}
+}

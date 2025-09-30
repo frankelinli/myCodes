@@ -1,0 +1,13 @@
+/* Highlight.js-like minimal theme (dark) */
+.hljs-comment,.hljs-quote{color:#7a88a0}
+.hljs-keyword,.hljs-selector-tag,.hljs-subst{color:#ffad66}
+.hljs-number,.hljs-literal,.hljs-variable,.hljs-template-variable,.hljs-tag .hljs-attr{color:#a1cfff}
+.hljs-string,.hljs-doctag{color:#a8ff60}
+.hljs-title,.hljs-section{color:#ffd580}
+.hljs-type,.hljs-class .hljs-title{color:#a1cfff}
+.hljs-attribute,.hljs-name,.hljs-tag{color:#f28fad}
+.hljs-symbol,.hljs-bullet,.hljs-link{color:#d5b3ff}
+.hljs-built_in,.hljs-builtin-name{color:#a1cfff}
+.hljs-meta{color:#7a88a0}
+.hljs-deletion{background:#5e2c2c}
+.hljs-addition{background:#27412d}

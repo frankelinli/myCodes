@@ -1,0 +1,59 @@
+/* Basic layout */
+:root {
+  --bg: #ffffff;
+  --panel: #f8fafc;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #2563eb;
+  --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+
+.page { display: grid; grid-template-columns: 280px 1fr; gap: 0; min-height: 100vh; }
+.sidebar { background: var(--panel); border-right: 1px solid var(--border); padding: 16px; position: sticky; top: 0; height: 100vh; overflow: auto; }
+.content { padding: 24px 32px; }
+
+.toc { font-size: 14px; line-height: 1.6; }
+.toc h2 { font-size: 16px; margin: 0 0 8px; color: var(--muted); }
+.toc ul { list-style: none; padding: 0; margin: 0; }
+.toc li { margin: 2px 0; }
+.toc a { color: var(--text); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc .toc-l2 { margin-left: 8px; }
+.toc .toc-l3 { margin-left: 16px; }
+.toc .toc-l4 { margin-left: 24px; }
+.toc .toc-l5 { margin-left: 32px; }
+.toc .toc-l6 { margin-left: 40px; }
+
+/* GitHub-like markdown styles (lightly) */
+.markdown-body { max-width: 900px; }
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5 {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px; margin-top: 1.6em; margin-bottom: 0.8em;
+}
+.markdown-body h1 { font-size: 2rem; }
+.markdown-body h2 { font-size: 1.6rem; }
+.markdown-body h3 { font-size: 1.3rem; }
+.markdown-body a { color: var(--accent); }
+.markdown-body p, .markdown-body li { color: var(--text); }
+
+/* tables */
+.markdown-body table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--border); padding: 8px 10px; }
+.markdown-body th { background: #f1f5f9; }
+.markdown-body tr:nth-child(even) { background: #f8fafc; }
+
+/* code blocks */
+pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+pre { padding: 14px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; overflow: auto; }
+code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
+pre code { background: transparent; border: 0; padding: 0; }
+
+/* autolink hash */
+h1 a[aria-hidden], h2 a[aria-hidden], h3 a[aria-hidden], h4 a[aria-hidden] {
+  color: var(--muted);
+  margin-left: 6px;
+  text-decoration: none;
+}

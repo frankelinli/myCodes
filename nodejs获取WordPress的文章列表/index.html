@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>WordPress文章标题列表</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    h1 { color: #333; }
+    ul { line-height: 2; }
+    li { margin-bottom: 0.5em; }
+  </style>
+</head>
+<body>
+  <h1>WordPress文章标题列表</h1>
+  <ul id="post-list"></ul>
+  <div class="pagination">
+    <button id="prev-btn">上一页</button>
+    <span id="page-info"></span>
+    <button id="next-btn">下一页</button>
+  </div>
+  <script>
+    const apiUrl = 'https://haoyelaiga.com/wp-json/wp/v2/posts';
+    let currentPage = 1;
+    let totalPages = 1;
+    const perPage = 10;
+
+    async function fetchPostTitles(page = 1) {
+      try {
+        const url = `${apiUrl}?per_page=${perPage}&page=${page}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('网络错误: ' + response.status);
+        const posts = await response.json();
+        totalPages = parseInt(response.headers.get('X-WP-TotalPages')) || 1;
+        renderPosts(posts);
+        renderPagination();
+      } catch (err) {
+        document.getElementById('post-list').innerHTML = '<li>获取失败: ' + err.message + '</li>';
+        document.getElementById('page-info').textContent = '';
+      }
+    }
+
+    function renderPosts(posts) {
+      const list = document.getElementById('post-list');
+      list.innerHTML = '';
+      posts.forEach(post => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.textContent = post.title.rendered;
+        a.href = post.link;
+        a.target = '_blank';
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    }
+
+    function renderPagination() {
+      document.getElementById('page-info').textContent = `第 ${currentPage} / ${totalPages} 页`;
+      document.getElementById('prev-btn').disabled = currentPage <= 1;
+      document.getElementById('next-btn').disabled = currentPage >= totalPages;
+    }
+
+    document.getElementById('prev-btn').onclick = function() {
+      if (currentPage > 1) {
+        currentPage--;
+        fetchPostTitles(currentPage);
+      }
+    };
+    document.getElementById('next-btn').onclick = function() {
+      if (currentPage < totalPages) {
+        currentPage++;
+        fetchPostTitles(currentPage);
+      }
+    };
+
+    fetchPostTitles(currentPage);
+  </script>
+</body>
+</html>
