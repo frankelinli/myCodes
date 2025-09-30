@@ -16,6 +16,8 @@ lerna-debug.log*
 .env
 .env.local
 .env.*.local
+.picgo-config.json
+.run_publish
 
 # 构建输出
 dist/
