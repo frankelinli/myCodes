@@ -22,11 +22,12 @@ import matter from 'gray-matter';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
-import remarkGfm from 'remark-gfm';
-import rehypeStringify from 'rehype-stringify';
 import remarkDirective from 'remark-directive';
+import remarkGfm from 'remark-gfm';
+import remarkGemoji from 'remark-gemoji';
+import rehypeStringify from 'rehype-stringify';
 import { visit } from 'unist-util-visit';
-import WPAPI from 'wpapi';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,13 +58,6 @@ if (!SITE || !USER || !APP_PASS) {
 }
 const API_BASE = `${SITE.replace(/\/+$/, '')}/wp-json/wp/v2`;
 const AUTH = 'Basic ' + Buffer.from(`${USER}:${APP_PASS}`).toString('base64');
-
-// 初始化 wpapi 客户端（用于更简洁的 posts 查询/创建/更新）
-const wp = new WPAPI({
-  endpoint: `${SITE.replace(/\/+$/, '')}/wp-json`,
-  username: USER,
-  password: APP_PASS
-});
 
 // 配置：是否自动创建不存在的分类/标签
 const AUTO_CREATE_TERMS = true;
@@ -97,12 +91,9 @@ async function wpFetch(url, options = {}) {
 async function findOrCreateTermBySlug(taxonomy, slugRaw) {
   const slug = String(slugRaw || '').trim();
   if (!slug) throw new Error(`空 ${taxonomy} slug`);
-  // 1) 查询（精确 slug） 使用 wpapi
-  const resource = wp[taxonomy] && typeof wp[taxonomy] === 'function' ? wp[taxonomy]() : wp[taxonomy];
-  if (!resource || typeof resource.slug !== 'function') {
-    throw new Error(`WPAPI 不支持 taxonomy=${taxonomy}`);
-  }
-  const arr = await resource.slug(slug).get();
+  // 1) 查询（精确 slug）
+  let r = await wpFetch(`${API_BASE}/${taxonomy}?slug=${encodeURIComponent(slug)}`, { method: 'GET' });
+  let arr = await r.json();
   if (process.env.DEBUG_PUBLISH) {
     console.log(`[DEBUG] 查询 ${taxonomy} slug="${slug}" -> ${Array.isArray(arr) ? arr.length : 'N/A'} 条`);
   }
@@ -110,15 +101,20 @@ async function findOrCreateTermBySlug(taxonomy, slugRaw) {
 
   if (!AUTO_CREATE_TERMS) throw new Error(`Term slug not found: ${taxonomy}:${slug}`);
 
-  // 2) 创建（使用 wpapi）
+  // 2) 创建
   try {
-    const created = await resource.create({ slug, name: slug.replace(/-/g, ' ') });
+    const createRes = await wpFetch(`${API_BASE}/${taxonomy}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, name: slug.replace(/-/g, ' ') })
+    });
+    const created = await createRes.json();
     if (created.slug && created.slug !== slug) {
       console.warn(`[WARN] 期望 slug=${slug} 实际创建 slug=${created.slug} (可能已存在重复，WP 自动重写)`);
     }
     return created.id;
   } catch (e) {
-    const msg = (e && e.message) || String(e || '');
+    const msg = e.message || '';
     if (msg.includes('term_exists')) {
       const idMatch = msg.match(/"term_id":\s*(\d+)/);
       if (idMatch) {
@@ -142,41 +138,63 @@ async function slugsToTermIds(taxonomy, list) {
   return ids;
 }
 
-// 自定义 Admonition 解析插件，支持 :::tip / :::warning[标题]
-function remarkAdmonitionBlocks() {
-  const TYPES = new Set(['tip','note','info','warning','caution','danger','important','success']);
+// 自定义 Admonition 解析插件（简洁、可靠）
+// 支持语法：:::tip ... ::: 以及 note/info/warning/danger
+// 生成结构：<div class="admonition tip"> ... 原始段落/内容 ... </div>
+function remarkAdmonitionSimple() {
+  const TYPES = new Set(['note', 'tip', 'info', 'warning', 'danger']);
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type !== 'containerDirective') return;
-      const type = (node.name || '').toLowerCase();
+    visit(tree, 'containerDirective', (node) => {
+      const type = String(node.name || '').toLowerCase();
       if (!TYPES.has(type)) return;
 
-      let titleText = node.label || '';
-      if (!titleText && node.children && node.children.length) {
-        const first = node.children[0];
-        if (first.type === 'paragraph' && first.children) {
-          const textNode = first.children.find(c => c.type === 'text' && c.value && c.value.trim());
-          if (textNode) {
-            titleText = textNode.value.trim();
-            // 移除第一段作为正文避免重复标题
-            node.children.shift();
-          }
-        }
-      }
-      if (!titleText) {
-        titleText = type.charAt(0).toUpperCase() + type.slice(1);
-      }
+      // 设置外层 div 和 class（rehype 推荐使用 className 数组）
       const data = node.data || (node.data = {});
       data.hName = 'div';
-      data.hProperties = { class: `admonition admonition-${type}` };
-      node.children.unshift({
-        type: 'paragraph',
-        data: { hName: 'p', hProperties: { class: 'admonition-title' } },
-        children: [{ type: 'text', value: titleText }]
-      });
+      data.hProperties = data.hProperties || {};
+      // 输出 class="admonition tip"（或 note/info/...）
+      data.hProperties.className = ['admonition', type];
+
+      // 先尝试 node.label（直接的 label 情况，例如 `:::type[label]`）
+      let labelText = null;
+      if (node.label && String(node.label).trim()) {
+        labelText = String(node.label).trim();
+      } else if (Array.isArray(node.children) && node.children.length > 0) {
+        const first = node.children[0];
+        // 仅当首段被标记为 directiveLabel 且其起始行与容器起始行相同
+        // 才把它当作 label（这样可以避免把换行后的普通内容段落误判为标题）
+        if (
+          first && first.type === 'paragraph' && first.data && first.data.directiveLabel &&
+          first.position && node.position && first.position.start && node.position.start &&
+          first.position.start.line === node.position.start.line
+        ) {
+          const parts = [];
+          for (const ch of first.children || []) {
+            if (ch.type === 'text') parts.push(ch.value);
+          }
+          const extracted = parts.join('').trim();
+          if (extracted) labelText = extracted;
+          // 删除原始的 label 段落（因为我们将以新的强格式插入）
+          node.children = node.children.slice(1);
+        }
+      }
+
+      if (labelText) {
+        const titleNode = {
+          type: 'paragraph',
+          children: [
+            { type: 'strong', children: [{ type: 'text', value: labelText }] }
+          ]
+        };
+        node.children = [titleNode, ...(node.children || [])];
+      }
+      // 否则保留原有子节点（通常为 paragraph 等）
     });
   };
 }
+
+
+
 
 // 为所有外部链接添加 target="_blank" 和 rel="noopener noreferrer"
 function addTargetBlank() {
@@ -248,15 +266,25 @@ function remarkHighlightTipInline() {
 
 
 // 将 Markdown 文本转换为 HTML，支持自定义 Admonition 块（如 :::tip）
-async function markdownToHTML(md) {
+export async function markdownToHTML(md) {
+  // 预处理：把常见的 `:::type label` 形式规范为 `:::type[label]`，
+  // 因为 remark-directive 默认不识别行内空格后的 label。
+  // 例如：
+  //   `:::warning 警告` -> `:::warning[警告]`
+  // 仅匹配我们支持的 admonition 类型，避免误替换其它情况。
+  // 仅匹配 `:::{type} {label}` 并且 label 与 type 在同一行（使用空格或制表符分隔），
+  // 避免把换行后的内容当作 label（用户不希望换行形式被识别为标题）。
+  md = md.replace(/(^|\r?\n):::(\s*)(note|tip|info|warning|danger)[ \t]+([^\[\r\n]+)/gi, '$1:::$3[$4]');
+
   const file = await unified()
     .use(remarkParse) // 解析 Markdown 语法
     .use(remarkGfm) // 支持 GitHub Flavored Markdown（包括表格）
     .use(remarkDirective) // 支持自定义指令（如 :::）
-    .use(remarkAdmonitionBlocks) // 处理自定义 Admonition 块
+    .use(remarkAdmonitionSimple)      
     .use(addTargetBlank) // 为外部链接添加 target="_blank"
     // .use(addSignature) // 插件函数，添加签名到文章末尾
-    .use(remarkHighlightTipInline) // 插件函数，处理【高亮提示】    
+    .use(remarkHighlightTipInline) // 插件函数，处理【高亮提示】  
+    .use(remarkGemoji) // 支持 Emoji 语法 :smile:
     .use(remarkRehype, { allowDangerousHtml: true }) // 转换为 HTML AST，允许危险 HTML
     .use(rehypeStringify, { allowDangerousHtml: true }) // 序列化为 HTML 字符串
     .process(md);
@@ -265,28 +293,28 @@ async function markdownToHTML(md) {
 
 
 async function getPostBySlug(slug) {
-  // 使用 wpapi 查询 posts，按 slug 精确匹配
-  const posts = await wp.posts().slug(slug).perPage(20).get();
+  const qs = new URLSearchParams({ slug, per_page: '20' });
+  const res = await wpFetch(`${API_BASE}/posts?${qs.toString()}`, { method: 'GET' });
+  const arr = await res.json();
   if (process.env.DEBUG_PUBLISH) {
-    console.log(`[DEBUG] 查询文章 slug="${slug}" 返回 ${Array.isArray(posts) ? posts.length : 'N/A'} 条`);
+    console.log(`[DEBUG] 查询文章 slug="${slug}" 返回 ${Array.isArray(arr) ? arr.length : 'N/A'} 条`);
   }
-  if (!Array.isArray(posts) || posts.length === 0) return null;
-  if (posts.length > 1 && process.env.DEBUG_PUBLISH) {
-    console.warn(`[WARN] slug="${slug}" 返回多条 (${posts.length})，将选用最早创建的一条`);
+  if (!Array.isArray(arr) || arr.length === 0) return null;
+  if (arr.length > 1 && process.env.DEBUG_PUBLISH) {
+    console.warn(`[WARN] slug="${slug}" 返回多条 (${arr.length})，将选用最早创建的一条`);
   }
-  return posts.sort((a,b)=> new Date(a.date_gmt||a.date).getTime() - new Date(b.date_gmt||b.date).getTime())[0];
+  return arr.sort((a,b)=> new Date(a.date_gmt||a.date).getTime() - new Date(b.date_gmt||b.date).getTime())[0];
 }
 
 // 通过已知 ID 获取文章。若不存在或无权限返回错误；404 时返回 null
 async function getPostById(id) {
   try {
-    // wpapi 的 .id(id).get() 在找不到时会抛出 HTTP 错误，我们需要把 404 转为 null
-    const post = await wp.posts().id(id).get();
-    return post;
+    const res = await wpFetch(`${API_BASE}/posts/${id}`, { method: 'GET' });
+    const json = await res.json();
+    return json; // id 存在
   } catch (e) {
-    const msg = (e && e.toString && e.toString()) || '';
-    if (msg.includes('404') || msg.includes('Not Found')) return null;
-    throw e;
+    if (/WP API 404/.test(e.message)) return null; // 不存在
+    throw e; // 其他错误抛出
   }
 }
 
@@ -386,14 +414,16 @@ export async function publishFile(mdPath, options = {}) {
 
   let result;
   if (existing) {
-    if (process.env.DEBUG_PUBLISH) console.log('[DEBUG] 更新文章 => wp.posts().id()', existing.id, opts.preserveSlugOnUpdate ? '(不更新 slug)' : '(包含 slug)');
-    // 使用 wpapi 更新文章
-    result = await wp.posts().id(existing.id).update(body);
+    const url = `${API_BASE}/posts/${existing.id}`;
+    if (process.env.DEBUG_PUBLISH) console.log('[DEBUG] 更新文章 =>', url, opts.preserveSlugOnUpdate ? '(不更新 slug)' : '(包含 slug)');
+    const res = await wpFetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    result = await res.json();
     console.log(`已更新：#${result.id} ${result.link}${opts.preserveSlugOnUpdate ? ' (slug 保持不变)' : ''}`);
   } else {
-    if (process.env.DEBUG_PUBLISH) console.log('[DEBUG] 创建文章 => wp.posts().create()');
-    // 使用 wpapi 创建文章
-    result = await wp.posts().create(body);
+    const url = `${API_BASE}/posts`;
+    if (process.env.DEBUG_PUBLISH) console.log('[DEBUG] 创建文章 =>', url);
+    const res = await wpFetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    result = await res.json();
     console.log(`已创建：#${result.id} ${result.link}`);
     if (!data.id && result.id) writeBackId(absMd, result.id);
   }

@@ -7,9 +7,11 @@ categories:
 tags: ["doc"]
 ---
 
-![remark markdown渲染构建](https://images.haoyelaiga.com/image-20250921201949766.png)
+![image-20251016003157147](https://haoyelaiga.com/wp-content/uploads/2025/10/image-20251016003157147.webp)
 
-remark渲染Markdown的插件顺序很重要，不能乱放，必须按照逻辑顺序来使用代码。顺序非常关键，随便放可能会导致插件不起作用或报错。我们来看上图的例子：
+本文强调了在使用 remark 渲染 Markdown 时，插件顺序的重要性。渲染流程须遵循 Markdown → AST → HTML 的逻辑顺序：首先用 `remarkParse` 转换为 AST，再应用处理 AST 的插件（如 `remarkGfm`、`remarkDirective`），然后用 `remarkRehype` 转为 HTML AST，最后通过 `rehypeStringify` 输出 HTML。插件间存在依赖关系，顺序错误可能导致功能失效或报错。遵循正确顺序可确保各插件正常运行，功能稳定生效。
+
+我们来看上图的例子：
 
 1️⃣ 基本规则
 
@@ -28,25 +30,25 @@ remark渲染Markdown的插件顺序很重要，不能乱放，必须按照逻辑
 
 ## 2️⃣ 调整顺序建议
 
-```
+```js
 const file = await unified()
-    .use(remarkParse)               // 必须最先
+    .use(remarkParse)               // 必须最先    
+    
+    
     .use(remarkGfm)                 // 支持表格、任务列表等
     .use(remarkDirective)           // 支持自定义指令
-    .use(remarkAdmonitionBlocks)    // 使用指令生成 Admonition 块
+    .use(remarkAdmonitionBlocks)    // 指令生成 Admonition 块
     .use(addTargetBlank)            // 修改链接 target
+    
+
     .use(remarkRehype, { allowDangerousHtml: true }) // 转换 HTML AST
     .use(rehypeStringify, { allowDangerousHtml: true }); // 输出 HTML
 ```
 
 ✅ 这个顺序是正确的，功能都会生效。
 
-[外链新窗口打开代码](https://chatgpt.com/c/68cfe6c9-9660-832c-96ba-285958321833)
+::: warning :warning:   再重温一次本文内容
 
-------
+remark渲染Markdown的插件顺序很重要，不能乱放，必须按照逻辑顺序来使用代码。顺序非常关键，随便放可能会导致插件不起作用或报错。
 
-💡 **总结**
-
-- **remark 插件顺序很重要**，因为它们都是操作 AST。
-- **必须在 `remarkRehype` 之前**，否则 AST 类型变化了就操作不到了。
-- **rehype 插件顺序也重要**，比如在 HTML AST 上再做操作（图片懒加载、表格样式等）。
+:::

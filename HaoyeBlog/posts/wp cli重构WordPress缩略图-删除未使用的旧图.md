@@ -7,7 +7,79 @@ categories:
 tags: []
 ---
 
-WP‑CLI命令行来重构WordPress的缩略图，并删除不使用的旧图。
+
+
+:::note
+
+If you use [Prettier](https://prettier.io/) to format your Markdown files, Prettier might auto-format your code to invalid admonition syntax. To avoid this problem, add empty lines around the starting and ending directives. This is also why the examples we show here all have empty lines around the content.
+
+:::
+
+:::tip
+
+:tipping_hand_man:
+
+If you use [Prettier](https://prettier.io/) to format your Markdown files, Prettier might auto-format your code to invalid admonition syntax. To avoid this problem, add empty lines around the starting and ending directives. This is also why the examples we show here all have empty lines around the content.大是大非
+
+:::
+
+
+
+:::info
+
+If you use [Prettier](https://prettier.io/) to format your Markdown files, Prettier might auto-format your code to invalid admonition syntax. To avoid this problem, add empty lines around the starting and ending directives. This is also why the examples we show here all have empty lines around the content.
+
+:::
+
+
+
+:::warning 警告
+
+If you use [Prettier](https://prettier.io/) to format your Markdown files, Prettier might auto-format your code to invalid admonition syntax. To avoid this problem, add empty lines around the starting and ending directives. This is also why the examples we show here all have empty lines around the content.dddddddldd额鹅鹅鹅饿
+
+:::
+
+
+
+:::danger :exclamation: :fire: 这是非常危险的事情。
+
+If you use [Prettier](https://prettier.io/) to format your Markdown files, Prettier might auto-format your code to invalid admonition syntax. To avoid this problem, add empty lines around the starting and ending directives. This is also why the examples we show here all have empty lines around the content.
+
+:::
+
+:::note
+
+```
+function remarkAdmonitionSimple() {
+  const TYPES = new Set(['note', 'tip', 'info', 'warning', 'danger']);
+  return (tree) => {
+    visit(tree, 'containerDirective', (node) => {
+      const type = String(node.name || '').toLowerCase();
+      if (!TYPES.has(type)) return;
+
+      // 设置外层 div 和 class（rehype 推荐使用 className 数组）
+      const data = node.data || (node.data = {});
+      data.hName = 'div';
+      data.hProperties = data.hProperties || {};
+      // 输出 class="admonition tip"（或 note/info/...）
+      data.hProperties.className = ['admonition', type];
+
+      // 如果指令带 label，则把 label 作为首个段落保留（可选标题）
+      if (node.label && String(node.label).trim()) {
+        const titleText = String(node.label).trim();
+        const titleNode = {
+          type: 'paragraph',
+          children: [{ type: 'text', value: titleText }]
+        };
+        node.children = [titleNode, ...(node.children || [])];
+      }
+      // 否则保留原有子节点（通常为 paragraph 等）
+    });
+  };
+}
+```
+
+:::
 
 ![image-20250927223342943](https://images.haoyelaiga.com/image-20250927223342943.webp)
 

@@ -215,12 +215,32 @@ add_image_size( 'wechat-square-cover', 383, 383, true );
 
 ```
 
-## “再生缩略图”（Regenerate Thumbnails）
+## 重构缩略图（Regenerate Thumbnails）
 
-- 新上传的图片将不会生成宽度为 1024 的中间尺寸，large 会使用 768。
-- 已存在的图片不会自动改变；若要对历史图片生效，请运行“再生缩略图”（Regenerate Thumbnails）或使用 WP-CLI：
-  - 在 WordPress 根目录运行：wp media regenerate --yes
-- 如果你更愿意把代码放到主题的 functions.php，也可以，但 mu-plugin 更保险、对主题切换无影响。
+在修改图片处理逻辑或者增加了新的图片尺寸后，只对以后的图片生效，之前已经上传的默认不受影响。如果你使用了新的特色图片尺寸，那么站点的不同文章的特色图片尺寸大小将不统一。
+
+为了避免不统一，需要对历史图片进行重构一遍。这个重构一遍也比较简单。
+
+最方便的是使用WP_CLI命令行，一行命令就OK。根本不需要安装插件！
+
+```php
+wp media regenerate --yes
+```
+
+运行这个命令，将批量对图片进行自动裁剪重构。
+
+![image-20251001125712501](https://images.haoyelaiga.com/image-20251001125712501.webp)
+
+这是 WP-CLI 的命令，用于遍历所有媒体库图片，重新生成所有媒体库图片的缩略图尺寸，基于当前注册的尺寸列表（包括默认尺寸和 `add_image_size()` 注册的自定义尺寸）。
+
+### 会新生成图片的情况：
+
+- 对于媒体库中已有的原图，如果当前注册了新的尺寸（如 `wechat-large-cover`），则会**新生成这些尺寸的副本**。
+- 如果之前某些尺寸未生成（比如你后来注册了），这次会补齐。
+
+### 删除旧尺寸副本
+
+如果某些尺寸不在当前注册列表中的图片，将会自动删除。如果你之前注册过某些尺寸（如 `wechat-square-cover`），后来取消了注册，再运行 `wp media regenerate --yes`，这些尺寸的旧文件就会被清理掉。
 
 ## 通过函数调用不同尺寸的图片
 
@@ -277,14 +297,7 @@ echo get_the_post_thumbnail( $post_id, $size, $attr );
 
 这段 PHP 代码是一个 WordPress 模板片段，用于显示最近的 5 篇已发布文章的列表，每篇文章会显示缩略图（如果有）、标题，并链接到对应的文章页面。
 
-1. 检查当前文章是否有缩略图。
-
-```php
-<?php
-$has_thumb = has_post_thumbnail($post->ID);
-```
-
-2. 如果有缩略图，使用 `get_the_post_thumbnail` 输出"thumbnail"小图（150*150的那张图）。带有 `class` 和 `alt` 属性的 `<img>` 标签。如果没有缩略图，显示“无”。
+检查当前文章是否有缩略图。如果有缩略图，使用 `get_the_post_thumbnail` 输出"thumbnail"小图（150*150的那张图）。带有 `class` 和 `alt` 属性的 `<img>` 标签。如果没有缩略图，显示“无”。
 
 ```php+HTML
 <?php if ($has_thumb): ?>
@@ -294,5 +307,8 @@ $has_thumb = has_post_thumbnail($post->ID);
 <?php endif; ?>
 ```
 
+![image-20251002000700363](https://haoyelaiga.com/wp-content/uploads/2025/10/image-20251002000700363.webp)
 
+![BingWallpaper](https://haoyelaiga.com/wp-content/uploads/2025/10/BingWallpaper.webp)
 
+![image-20251002001105084](https://haoyelaiga.com/wp-content/uploads/2025/10/image-20251002001105084.webp)

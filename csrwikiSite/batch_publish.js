@@ -145,13 +145,17 @@ async function main() {
   console.log('\n开始处理文章...');
   let success = 0;
   let failed = 0;
+  const publishedUrls = [];
   
   for (let i = 0; i < newFiles.length; i++) {
     const file = newFiles[i];
     console.log(`\n[${i + 1}/${newFiles.length}] 处理中: ${file.relativePath}`);
     
     try {
-      await publishFile(file.path);
+      const publishResult = await publishFile(file.path);
+      if (publishResult && publishResult.result && publishResult.result.link) {
+        publishedUrls.push(publishResult.result.link);
+      }
       success++;
     } catch (error) {
       console.error('处理失败:', error.message);
@@ -165,6 +169,13 @@ async function main() {
   }
   
   console.log(`\n处理完成: 成功 ${success}，失败 ${failed}`);
+  
+  // 输出已发布的文章URL，供批处理脚本捕获
+  if (publishedUrls.length > 0) {
+    console.log('\n=== PUBLISHED_URLS ===');
+    publishedUrls.forEach(url => console.log(url));
+    console.log('=== END_URLS ===');
+  }
   
   // 只有全部成功才更新时间戳
   if (failed === 0) {

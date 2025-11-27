@@ -27,6 +27,8 @@ import remarkGemoji from 'remark-gemoji';
 import rehypeStringify from 'rehype-stringify';
 import remarkDirective from 'remark-directive';
 import { visit } from 'unist-util-visit';
+import { processSummary } from './summary-generator.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -137,41 +139,62 @@ async function slugsToTermIds(taxonomy, list) {
   return ids;
 }
 
-// 自定义 Admonition 解析插件，支持 :::tip / :::warning[标题]
-function remarkAdmonitionBlocks() {
-  const TYPES = new Set(['tip','note','info','warning','caution','danger','important','success']);
+// 自定义 Admonition 解析插件（简洁、可靠）
+// 支持语法：:::tip ... ::: 以及 note/info/warning/danger
+// 生成结构：<div class="admonition tip"> ... 原始段落/内容 ... </div>
+function remarkAdmonitionSimple() {
+  const TYPES = new Set(['note', 'tip', 'info', 'warning', 'danger']);
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type !== 'containerDirective') return;
-      const type = (node.name || '').toLowerCase();
+    visit(tree, 'containerDirective', (node) => {
+      const type = String(node.name || '').toLowerCase();
       if (!TYPES.has(type)) return;
 
-      let titleText = node.label || '';
-      if (!titleText && node.children && node.children.length) {
-        const first = node.children[0];
-        if (first.type === 'paragraph' && first.children) {
-          const textNode = first.children.find(c => c.type === 'text' && c.value && c.value.trim());
-          if (textNode) {
-            titleText = textNode.value.trim();
-            // 移除第一段作为正文避免重复标题
-            node.children.shift();
-          }
-        }
-      }
-      if (!titleText) {
-        titleText = type.charAt(0).toUpperCase() + type.slice(1);
-      }
+      // 设置外层 div 和 class（rehype 推荐使用 className 数组）
       const data = node.data || (node.data = {});
       data.hName = 'div';
-      data.hProperties = { class: `admonition admonition-${type}` };
-      node.children.unshift({
-        type: 'paragraph',
-        data: { hName: 'p', hProperties: { class: 'admonition-title' } },
-        children: [{ type: 'text', value: titleText }]
-      });
+      data.hProperties = data.hProperties || {};
+      // 输出 class="admonition tip"（或 note/info/...）
+      data.hProperties.className = ['admonition', type];
+
+      // 先尝试 node.label（直接的 label 情况，例如 `:::type[label]`）
+      let labelText = null;
+      if (node.label && String(node.label).trim()) {
+        labelText = String(node.label).trim();
+      } else if (Array.isArray(node.children) && node.children.length > 0) {
+        const first = node.children[0];
+        // 仅当首段被标记为 directiveLabel 且其起始行与容器起始行相同
+        // 才把它当作 label（这样可以避免把换行后的普通内容段落误判为标题）
+        if (
+          first && first.type === 'paragraph' && first.data && first.data.directiveLabel &&
+          first.position && node.position && first.position.start && node.position.start &&
+          first.position.start.line === node.position.start.line
+        ) {
+          const parts = [];
+          for (const ch of first.children || []) {
+            if (ch.type === 'text') parts.push(ch.value);
+          }
+          const extracted = parts.join('').trim();
+          if (extracted) labelText = extracted;
+          // 删除原始的 label 段落（因为我们将以新的强格式插入）
+          node.children = node.children.slice(1);
+        }
+      }
+
+      if (labelText) {
+        const titleNode = {
+          type: 'paragraph',
+          children: [
+            { type: 'strong', children: [{ type: 'text', value: labelText }] }
+          ]
+        };
+        node.children = [titleNode, ...(node.children || [])];
+      }
+      // 否则保留原有子节点（通常为 paragraph 等）
     });
   };
 }
+
+
 
 // 为所有外部链接添加 target="_blank" 和 rel="noopener noreferrer"
 function addTargetBlank() {
@@ -198,6 +221,7 @@ function addSignature() {
     })
   }
 }
+
 
 // 测试用，以后可以删除。在内联文本中处理【高亮提示】格式：将【内容】转换为带 tooltip 的高亮 span
 function remarkHighlightTipInline() {
@@ -243,15 +267,24 @@ function remarkHighlightTipInline() {
 
 
 // 将 Markdown 文本转换为 HTML，支持自定义 Admonition 块（如 :::tip）
-async function markdownToHTML(md) {
+export async function markdownToHTML(md) {
+  // 预处理：把常见的 `:::type label` 形式规范为 `:::type[label]`，
+  // 因为 remark-directive 默认不识别行内空格后的 label。
+  // 例如：
+  //   `:::warning 警告` -> `:::warning[警告]`
+  // 仅匹配我们支持的 admonition 类型，避免误替换其它情况。
+  // 仅匹配 `:::{type} {label}` 并且 label 与 type 在同一行（使用空格或制表符分隔），
+  // 避免把换行后的内容当作 label（用户不希望换行形式被识别为标题）。
+  md = md.replace(/(^|\r?\n):::(\s*)(note|tip|info|warning|danger)[ \t]+([^\[\r\n]+)/gi, '$1:::$3[$4]');
+
   const file = await unified()
     .use(remarkParse) // 解析 Markdown 语法
     .use(remarkGfm) // 支持 GitHub Flavored Markdown（包括表格）
     .use(remarkDirective) // 支持自定义指令（如 :::）
-    .use(remarkAdmonitionBlocks) // 处理自定义 Admonition 块    
+    .use(remarkAdmonitionSimple)      
     .use(addTargetBlank) // 为外部链接添加 target="_blank"
     // .use(addSignature) // 插件函数，添加签名到文章末尾
-    .use(remarkHighlightTipInline) // 插件函数，处理【高亮提示】  
+    .use(remarkHighlightTipInline) // 插件函数，处理【高亮提示】 
     .use(remarkGemoji) // 支持 Emoji 语法 :smile:      
     .use(remarkRehype, { allowDangerousHtml: true }) // 转换为 HTML AST，允许危险 HTML
     .use(rehypeStringify, { allowDangerousHtml: true }) // 序列化为 HTML 字符串
@@ -338,6 +371,16 @@ export async function publishFile(mdPath, options = {}) {
   if (!fs.existsSync(absMd)) {
     throw new Error('文件不存在: ' + absMd);
   }
+  
+  // 首先尝试生成并插入摘要
+  try {
+    const { content: rawContent } = parseFrontMatter(absMd);
+    await processSummary(absMd, rawContent);
+  } catch (error) {
+    console.warn('[WARN] 摘要生成过程失败:', error.message);
+  }
+  
+  // 重新解析文件（可能已经插入了摘要）
   const { data, content } = parseFrontMatter(absMd);
   const title = data.title || path.parse(absMd).name;
   if (!data.slug || String(data.slug).trim() === '') {

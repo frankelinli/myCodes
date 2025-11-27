@@ -1,6 +1,6 @@
 ---
 id: 13
-title: BSCI验厂介绍（商业社会责任倡议）
+title: amfori BSCI验厂介绍（商业社会责任倡议）
 slug: bsci-audit-introduction
 date: '2023-10-12T21:54:05'
 categories:
@@ -8,12 +8,19 @@ categories:
 tags:
   - doc
 url: https://csrwiki.com/bsci/bsci-audit-introduction
-featured_image: https://csrwiki.com/wp-content/uploads/2023/10/amfori-bsci.jpg
 ---
 
 ## amfori介绍
 
-1977 年，少数几家公司在比利时布鲁塞尔成立了对外贸易协会 （FTA），代表欧洲零售商、品牌和进口商对欧洲和国际机构的外贸利益。
+![](https://csrwiki.com/wp-content/uploads/2024/05/image-4.png)
+
+:::note
+
+amfori是BSCI验厂、BEPI验厂和QMI验厂这三个产品的母公司。其前身是欧洲对外贸易协会，后改名为amfori，这个名字本身没有直接对应的中文翻译，大概是“公平贸易”的意思。
+
+:::
+
+1977 年，少数几家公司在比利时布鲁塞尔成立了对外贸易协会 （FTA)，代表欧洲零售商、品牌和进口商对欧洲和国际机构的外贸利益。
 
 随着时间的流逝，FTA的范围不断扩大，以应对消费者、非政府组织和其他利益相关者对公司应履行其社会责任的日益增长的期望。例如，人们怎么知道他们购买的商品来自尊重供应链中工人的公司？这些问题导致了2003年商业社会责任倡议（BSCI）的启动。
 
@@ -23,23 +30,21 @@ featured_image: https://csrwiki.com/wp-content/uploads/2023/10/amfori-bsci.jpg
 
 ![](https://csrwiki.com/wp-content/uploads/2024/05/9658-Images-6.gif)
 
-## amfori BSCI 社会责任验厂标准
+- ## amfori BSCI 社会责任验厂标准
 
-BSCI验厂全名是“商业社会责任倡议”（Business Social Compliance Initiative），是一个第三方社会责任验厂标准，旨在监控和评估全球供应链中的工作场所标准。被众多国际品牌客户所接受和认可。
+  BSCI验厂全名是“商业社会责任倡议”（Business Social Compliance Initiative），是一个第三方社会责任验厂标准，旨在监控和评估全球供应链中的工作场所标准。被众多国际品牌客户所接受和认可。
 
-![](https://csrwiki.com/wp-content/uploads/2024/05/image-4.png)
+  
 
+- ## amfori BEPI 环境验厂标准
 
+  现代企业还要减少供应链对环境的影响。为了促进这项工作，amfori 制定了企业环境绩效倡议（BEPI）。它涵盖了8个环境绩效领域
 
-## amfori BEPI 环境验厂标准
+  amfori 已发展成为可持续贸易的领先商业协会，通过改善供应链的环境，社会和治理绩效，支持地球仪的公司成功经营和负责任的业务。
 
-现代企业还要减少供应链对环境的影响。为了促进这项工作，amfori 制定了企业环境绩效倡议（BEPI）。它涵盖了8个环境绩效领域
+- ## amfori QMI 质量验厂标准
 
-amfori 已发展成为可持续贸易的领先商业协会，通过改善供应链的环境，社会和治理绩效，支持地球仪的公司成功经营和负责任的业务。
-
-## amfori QMI 质量验厂标准
-
-2022 年，amfori 还在中国推出了 amfori QMI，即Quality Management Initiative质量管理计划。amfori QMI已于2023年底扩展到印度，泰国和越南，并将在适当的时候扩展到许多其他国家。
+  2022 年，amfori 还在中国推出了 amfori QMI，即Quality Management Initiative质量管理计划。amfori QMI已于2023年底扩展到印度，泰国和越南，并将在适当的时候扩展到许多其他国家。
 
 #### BSCI审核的评分等级
 
@@ -70,4 +75,5 @@ BSCI验厂流程包括以下六步：
 2. 选择审核公司
 3. 进行半通知或突击审计访问
 4. 收到纠正措施计划，然后是纠正阶段以提高合规性
-5. 如果需要，在初次审核后的 12 个月内进行后续审核，以证明对 amfori BSCI 2.0 的承诺
+5. 如果需要，在初次审核后的 12 个月内进行后续审核，以证明对 amfori BSCI 2.0 的承诺。
+

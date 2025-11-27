@@ -48,18 +48,3 @@ async function uploadFeaturedImage(filePath, postId) {
 // 调用示例
 uploadFeaturedImage('./house.webp', 796) // 796 替换为目标文章 ID
   .catch(err => console.error('❌ 出错:', err));
-
-
-
-  <img
-  width="550"
-  height="794"
-  src="https://haoyelaiga.com/wp-content/uploads/2025/09/house.webp"
-  class="attachment-large size-large wp-post-image"
-  alt=""
-  itemprop="image"
-  decoding="async"
-  fetchpriority="high"
-  srcset="https://haoyelaiga.com/wp-content/uploads/2025/09/house.webp 550w, https://haoyelaiga.com/wp-content/uploads/2025/09/house-208x300.webp 208w"
-  sizes="(max-width: 550px) 100vw, 550px"
-/>

@@ -7,7 +7,13 @@ categories:
 tags: []
 ---
 
-我们可以直接在你的 WordPress 站点上用 `wp_mail()` 做一次简单测试。你只需要在 `functions.php` 或临时插件中加入以下代码，然后访问页面或触发钩子，就能看到邮件是否成功发送。![house](https://images.haoyelaiga.com/house.webp)
+:::note
+
+我们可以直接在你的 WordPress 站点上用 `wp_mail()` 做一次简单测试。你只需要在 `functions.php` 或临时插件中加入以下代码，然后访问页面或触发钩子，就能看到邮件是否成功发送。
+
+:::
+
+![house](https://images.haoyelaiga.com/house.webp)
 
 ## 🧪 示例：测试 wp_mail() 是否能发邮件
 

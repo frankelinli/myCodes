@@ -49,5 +49,7 @@ if /i "%userInput%"=="Y" (
   echo 未执行正式发布。
 )
 
-echo 完成。按任意键退出。
-pause >nul
+
+echo 完成，窗口即将关闭。
+timeout /t 20 >nul
+exit

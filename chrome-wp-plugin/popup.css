@@ -1,0 +1,236 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  width: 350px;
+  min-height: 450px;
+}
+
+.container {
+  background: white;
+  border-radius: 12px;
+  margin: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.header {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.header h2 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.site-info {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.login-section, .member-section {
+  padding: 25px;
+}
+
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #555;
+  font-size: 13px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #4facfe;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.btn-primary, .btn-secondary {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #dee2e6;
+}
+
+.btn-secondary:hover {
+  background: #e9ecef;
+}
+
+.status-message {
+  min-height: 20px;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.status-message.success {
+  color: #28a745;
+}
+
+.status-message.error {
+  color: #dc3545;
+}
+
+.status-message.loading {
+  color: #007bff;
+}
+
+.member-status {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.status-badge {
+  display: inline-block;
+  background: #28a745;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.member-status p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.feature-controls {
+  margin-bottom: 25px;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #555;
+}
+
+.toggle-switch input {
+  display: none;
+}
+
+.slider {
+  width: 40px;
+  height: 20px;
+  background: #ccc;
+  border-radius: 20px;
+  margin-right: 12px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.slider:before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+}
+
+.toggle-switch input:checked + .slider {
+  background: #4facfe;
+}
+
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.footer {
+  padding: 15px 25px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.footer a {
+  color: #4facfe;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* 动画效果 */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 加载状态 */
+.loading::after {
+  content: '...';
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0%, 33% { content: '...'; }
+  34%, 66% { content: '....'; }
+  67%, 100% { content: '.....'; }
+}

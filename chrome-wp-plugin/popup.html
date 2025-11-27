@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WordPress会员验证</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>WordPress会员验证</h2>
+      <p class="site-info">haoyelaiga.com</p>
+    </div>
+    
+    <div id="login-form" class="login-section">
+      <div class="input-group">
+        <label for="username">用户名/邮箱:</label>
+        <input type="text" id="username" placeholder="输入用户名或邮箱">
+      </div>
+      
+      <div class="input-group">
+        <label for="password">密码:</label>
+        <input type="password" id="password" placeholder="输入密码">
+      </div>
+      
+      <button id="login-btn" class="btn-primary">登录验证</button>
+      
+      <div id="login-status" class="status-message"></div>
+    </div>
+    
+    <div id="member-info" class="member-section" style="display: none;">
+      <div class="member-status">
+        <span class="status-badge">✓ 已认证会员</span>
+        <p id="member-name"></p>
+        <p id="member-level"></p>
+      </div>
+      
+      <div class="feature-controls">
+        <label class="toggle-switch">
+          <input type="checkbox" id="enable-injection">
+          <span class="slider"></span>
+          启用页面注入功能
+        </label>
+        
+        <label class="toggle-switch">
+          <input type="checkbox" id="enable-buttons">
+          <span class="slider"></span>
+          启用功能按钮
+        </label>
+      </div>
+      
+      <button id="logout-btn" class="btn-secondary">退出登录</button>
+    </div>
+    
+    <div class="footer">
+      <a href="#" id="help-link">使用帮助</a>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
