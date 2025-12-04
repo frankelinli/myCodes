@@ -1,3 +1,38 @@
+---
+id: 208
+title: 获取并展示WordPress的全部配置信息
+slug: '%e8%8e%b7%e5%8f%96%e5%b9%b6%e5%b1%95%e7%a4%bawordpress%e7%9a%84%e5%85%a8%e9%83%a8%e9%85%8d%e7%bd%ae%e4%bf%a1%e6%81%af'
+date: '2025-05-02T22:18:20'
+categories:
+  - notes
+tags: []
+url: https://haoyelaiga.com/%e8%8e%b7%e5%8f%96%e5%b9%b6%e5%b1%95%e7%a4%bawordpress%e7%9a%84%e5%85%a8%e9%83%a8%e9%85%8d%e7%bd%ae%e4%bf%a1%e6%81%af/
+---
+
+:::note
+
+我已经成功创建了一个名为(的新页面，该页面将显示您WordPress站点的全部配置信息。这个页面包含了多个部分，展示了关于WordPress、PHP、MySQL和服务器的详细信息。
+
+:::
+
+该页面的主要内容包括：
+
+1. **WordPress信息** – 显示版本、URL、安装目录等基本信息
+2. **PHP信息** – 显示PHP版本、配置设置、扩展状态（特别是mysqli扩展）
+3. **MySQL信息** – 显示数据库版本、名称、表数量和大小等
+4. **服务器信息** – 显示服务器软件、操作系统和配置
+5. **已激活插件** – 列出所有当前激活的插件及其版本
+6. **当前主题** – 显示正在使用的主题信息
+
+![image-20250919112840678](https://haoyeblog-1319658309.cos.ap-guangzhou.myqcloud.com/image-20250919112840678.png)
+
+该页面添加了安全措施，只有管理员才能访问，并包含了美观的样式和导航链接，方便查看不同部分的信息。
+
+您现在可以通过浏览器访问以下地址来查看这个页面：
+
+http\://您的网站地址/wp-info.php
+
+```html
 <?php
 /**
  * WordPress系统信息页面
@@ -103,7 +138,7 @@ global $wpdb;
 <body>
     <div class="info-container">
         <h1>WordPress系统信息</h1>
-        
+
         <div class="section-nav">
             <a href="#wordpress">WordPress信息</a>
             <a href="#php">PHP信息</a>
@@ -112,7 +147,7 @@ global $wpdb;
             <a href="#plugins">已激活插件</a>
             <a href="#theme">当前主题</a>
         </div>
-        
+
         <h2 id="wordpress">WordPress信息</h2>
         <table>
             <tr>
@@ -163,7 +198,7 @@ global $wpdb;
                 <td><?php echo defined('WP_POST_REVISIONS') ? (WP_POST_REVISIONS === true ? '无限' : WP_POST_REVISIONS) : '默认'; ?></td>
             </tr>
         </table>
-        
+
         <h2 id="php">PHP信息</h2>
         <table>
             <tr>
@@ -219,7 +254,7 @@ global $wpdb;
                 <td><?php echo implode(', ', get_loaded_extensions()); ?></td>
             </tr>
         </table>
-        
+
         <h2 id="mysql">MySQL/数据库信息</h2>
         <table>
             <tr>
@@ -267,7 +302,7 @@ global $wpdb;
                 ?></td>
             </tr>
         </table>
-        
+
         <h2 id="server">服务器信息</h2>
         <table>
             <tr>
@@ -311,7 +346,7 @@ global $wpdb;
                 <td><?php echo esc_html(get_option('timezone_string') ?: 'UTC' . get_option('gmt_offset')); ?></td>
             </tr>
         </table>
-        
+
         <h2 id="plugins">已激活插件</h2>
         <table>
             <tr>
@@ -337,7 +372,7 @@ global $wpdb;
             }
             ?>
         </table>
-        
+
         <h2 id="theme">当前主题</h2>
         <?php
         $theme = wp_get_theme();
@@ -377,7 +412,7 @@ global $wpdb;
             </tr>
             <?php endif; ?>
         </table>
-        
+
         <p>
             <a href="<?php echo esc_url(home_url()); ?>" class="back-to-site">返回网站首页</a>
         </p>
@@ -385,3 +420,4 @@ global $wpdb;
     <?php wp_footer(); ?>
 </body>
 </html>
+```

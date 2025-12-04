@@ -64,16 +64,6 @@ const AUTH = 'Basic ' + Buffer.from(`${USER}:${APP_PASS}`).toString('base64');
 const AUTO_CREATE_TERMS = true;
 
 // ====== 工具函数 ======
-/**
- * 根据文件路径判断内容类型
- * @param {string} mdPath - Markdown 文件路径
- * @returns {string} 'post' 或 'page'
- */
-function getContentType(mdPath) {
-  const normalizedPath = path.normalize(mdPath).replace(/\\/g, '/');
-  return normalizedPath.includes('/pages/') ? 'page' : 'post';
-}
-
 function ensureAbsolute(p, baseDir) {
   if (!p) return null;
   if (/^https?:\/\//i.test(p)) return p; // 已是 URL
@@ -303,13 +293,12 @@ export async function markdownToHTML(md) {
 }
 
 
-async function getPostBySlug(slug, contentType = 'post') {
-  const endpoint = contentType === 'page' ? 'pages' : 'posts';
+async function getPostBySlug(slug) {
   const qs = new URLSearchParams({ slug, per_page: '20' });
-  const res = await wpFetch(`${API_BASE}/${endpoint}?${qs.toString()}`, { method: 'GET' });
+  const res = await wpFetch(`${API_BASE}/posts?${qs.toString()}`, { method: 'GET' });
   const arr = await res.json();
   if (process.env.DEBUG_PUBLISH) {
-    console.log(`[DEBUG] 查询${contentType === 'page' ? '页面' : '文章'} slug="${slug}" 返回 ${Array.isArray(arr) ? arr.length : 'N/A'} 条`);
+    console.log(`[DEBUG] 查询文章 slug="${slug}" 返回 ${Array.isArray(arr) ? arr.length : 'N/A'} 条`);
   }
   if (!Array.isArray(arr) || arr.length === 0) return null;
   if (arr.length > 1 && process.env.DEBUG_PUBLISH) {
@@ -318,11 +307,10 @@ async function getPostBySlug(slug, contentType = 'post') {
   return arr.sort((a,b)=> new Date(a.date_gmt||a.date).getTime() - new Date(b.date_gmt||b.date).getTime())[0];
 }
 
-// 通过已知 ID 获取文章或页面。若不存在或无权限返回错误；404 时返回 null
-async function getPostById(id, contentType = 'post') {
-  const endpoint = contentType === 'page' ? 'pages' : 'posts';
+// 通过已知 ID 获取文章。若不存在或无权限返回错误；404 时返回 null
+async function getPostById(id) {
   try {
-    const res = await wpFetch(`${API_BASE}/${endpoint}/${id}`, { method: 'GET' });
+    const res = await wpFetch(`${API_BASE}/posts/${id}`, { method: 'GET' });
     const json = await res.json();
     return json; // id 存在
   } catch (e) {
@@ -392,12 +380,6 @@ export async function publishFile(mdPath, options = {}) {
     console.warn('[WARN] 摘要生成过程失败:', error.message);
   }
   
-  // 判断内容类型
-  const contentType = getContentType(absMd);
-  if (process.env.DEBUG_PUBLISH) {
-    console.log(`[DEBUG] 内容类型: ${contentType === 'page' ? '页面(page)' : '文章(post)'}`);
-  }
-  
   // 重新解析文件（可能已经插入了摘要）
   const { data, content } = parseFrontMatter(absMd);
   const title = data.title || path.parse(absMd).name;
@@ -409,41 +391,31 @@ export async function publishFile(mdPath, options = {}) {
 
   // Markdown -> HTML
   const html = await markdownToHTML(content);
-  // page 类型不需要 categories 和 tags
-  const categoryIds = contentType === 'post' ? await slugsToTermIds('categories', data.categories || []) : [];
-  const tagIds = contentType === 'post' ? await slugsToTermIds('tags', data.tags || []) : [];
+  const categoryIds = await slugsToTermIds('categories', data.categories || []);
+  const tagIds = await slugsToTermIds('tags', data.tags || []);
 
-  // 查询现有文章或页面
+  // 查询现有文章
   let existing = null;
   if (data.id) {
     const numericId = Number(data.id);
     if (!Number.isNaN(numericId) && numericId > 0) {
-      if (process.env.DEBUG_PUBLISH) console.log(`[DEBUG] 尝试通过 id=${numericId} 获取${contentType === 'page' ? '页面' : '文章'}`);
-      try { existing = await getPostById(numericId, contentType); } catch (e) { console.warn(`[WARN] 通过 ID 获取${contentType === 'page' ? '页面' : '文章'}失败，回退 slug 查询:`, e.message); }
+      if (process.env.DEBUG_PUBLISH) console.log(`[DEBUG] 尝试通过 id=${numericId} 获取文章`);
+      try { existing = await getPostById(numericId); } catch (e) { console.warn('[WARN] 通过 ID 获取文章失败，回退 slug 查询:', e.message); }
     }
   }
-  if (!existing) existing = await getPostBySlug(slug, contentType);
+  if (!existing) existing = await getPostBySlug(slug);
   if (process.env.DEBUG_PUBLISH) {
-    console.log(existing ? `[DEBUG] 准备更新${contentType === 'page' ? '页面' : '文章'} id=${existing.id}` : `[DEBUG] 准备创建新${contentType === 'page' ? '页面' : '文章'}`);
+    console.log(existing ? `[DEBUG] 准备更新文章 id=${existing.id}` : '[DEBUG] 准备创建新文章');
   }
 
   // 构造请求体
   const body = {
     title,
     status,
-    content: html
+    content: html,
+    categories: categoryIds,
+    tags: tagIds
   };
-  
-  // page 类型支持特殊字段
-  if (contentType === 'page') {
-    if (typeof data.parent === 'number') body.parent = data.parent;
-    if (typeof data.menu_order === 'number') body.menu_order = data.menu_order;
-  } else {
-    // post 类型才有分类和标签
-    body.categories = categoryIds;
-    body.tags = tagIds;
-  }
-  
   if (!existing || !opts.preserveSlugOnUpdate) {
     body.slug = slug; // 仅创建或明确允许更新 slug 时设置
   }
@@ -451,22 +423,19 @@ export async function publishFile(mdPath, options = {}) {
     body.featured_media = data.featured_image;
   }
 
-  const endpoint = contentType === 'page' ? 'pages' : 'posts';
-  const typeLabel = contentType === 'page' ? '页面' : '文章';
-  
   let result;
   if (existing) {
-    const url = `${API_BASE}/${endpoint}/${existing.id}`;
-    if (process.env.DEBUG_PUBLISH) console.log(`[DEBUG] 更新${typeLabel} =>`, url, opts.preserveSlugOnUpdate ? '(不更新 slug)' : '(包含 slug)');
+    const url = `${API_BASE}/posts/${existing.id}`;
+    if (process.env.DEBUG_PUBLISH) console.log('[DEBUG] 更新文章 =>', url, opts.preserveSlugOnUpdate ? '(不更新 slug)' : '(包含 slug)');
     const res = await wpFetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     result = await res.json();
-    console.log(`已更新${typeLabel}：#${result.id} ${result.link}${opts.preserveSlugOnUpdate ? ' (slug 保持不变)' : ''}`);
+    console.log(`已更新：#${result.id} ${result.link}${opts.preserveSlugOnUpdate ? ' (slug 保持不变)' : ''}`);
   } else {
-    const url = `${API_BASE}/${endpoint}`;
-    if (process.env.DEBUG_PUBLISH) console.log(`[DEBUG] 创建${typeLabel} =>`, url);
+    const url = `${API_BASE}/posts`;
+    if (process.env.DEBUG_PUBLISH) console.log('[DEBUG] 创建文章 =>', url);
     const res = await wpFetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     result = await res.json();
-    console.log(`已创建${typeLabel}：#${result.id} ${result.link}`);
+    console.log(`已创建：#${result.id} ${result.link}`);
     if (!data.id && result.id) writeBackId(absMd, result.id);
   }
   return { result, existing, absMd };

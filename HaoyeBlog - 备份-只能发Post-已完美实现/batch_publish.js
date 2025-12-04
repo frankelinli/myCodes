@@ -39,40 +39,25 @@ function saveCurrentTime() {
   fs.writeFileSync(TIMESTAMP_FILE, isoString);
 }
 
-function findMarkdownFiles(dirs) {
+function findMarkdownFiles(dir) {
   const files = [];
-  
-  function scan(currentDir, type) {
+  function scan(currentDir) {
     try {
       const items = fs.readdirSync(currentDir, { withFileTypes: true });
       for (const item of items) {
         if (item.name.startsWith('.')) continue;
         const fullPath = path.join(currentDir, item.name);
         if (item.isDirectory()) {
-          scan(fullPath, type);
+          scan(fullPath);
         } else if (item.name.endsWith('.md')) {
-          files.push({ path: fullPath, type });
+          files.push(fullPath);
         }
       }
     } catch (err) {
       console.warn('跳过目录:', currentDir);
     }
   }
-  
-  // 扫描多个目录
-  if (Array.isArray(dirs)) {
-    dirs.forEach(dir => {
-      const type = dir.includes('pages') ? 'page' : 'post';
-      if (fs.existsSync(dir)) {
-        scan(dir, type);
-      }
-    });
-  } else {
-    if (fs.existsSync(dirs)) {
-      scan(dirs, 'post');
-    }
-  }
-  
+  scan(dir);
   return files;
 }
 
@@ -99,20 +84,12 @@ async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
   const forceAll = args.includes('--all');
-  const onlyPages = args.includes('--pages');
-  const onlyPosts = args.includes('--posts');
   
   if (args.includes('--help')) {
     console.log(`极简批量处理工具:
-  node batch_publish.js           # 处理新修改的文章和页面
-  node batch_publish.js --posts   # 只处理文章(posts目录)
-  node batch_publish.js --pages   # 只处理页面(pages目录)
-  node batch_publish.js --all     # 处理所有文章和页面
+  node batch_publish.js           # 处理新修改的文章（创建新文章或更新现有文章）
+  node batch_publish.js --all     # 处理所有文章  
   node batch_publish.js --dry-run # 预览模式
-  
-目录结构:
-  posts/  - 文章类型(post)
-  pages/  - 页面类型(page)
   
 原理: 基于 .last-publish-time 文件记录的时间戳`);
     return;
@@ -121,42 +98,26 @@ async function main() {
   const lastTime = forceAll ? 0 : getLastTime();
   
   if (lastTime === 0) {
-    console.log('首次运行或强制模式，检查所有内容');
+    console.log('首次运行或强制模式，检查所有文章');
   } else {
-    console.log(`检查 ${new Date(lastTime).toLocaleString()} 之后修改的内容`);
-  }
-  
-  // 确定要扫描的目录
-  let dirsToScan = [];
-  if (onlyPosts) {
-    dirsToScan = ['posts'];
-    console.log('只处理文章(posts)');
-  } else if (onlyPages) {
-    dirsToScan = ['pages'];
-    console.log('只处理页面(pages)');
-  } else {
-    dirsToScan = ['posts', 'pages'];
-    console.log('处理文章和页面');
+    console.log(`检查 ${new Date(lastTime).toLocaleString()} 之后修改的文章`);
   }
   
   // 扫描文件
-  const allFiles = findMarkdownFiles(dirsToScan);
+  const allFiles = findMarkdownFiles('posts');
   const newFiles = [];
   
   for (const file of allFiles) {
-    if (!isValidMarkdown(file.path)) {
-      const baseDir = file.type === 'page' ? 'pages' : 'posts';
-      console.warn('跳过无效文件:', path.relative(baseDir, file.path));
+    if (!isValidMarkdown(file)) {
+      console.warn('跳过无效文件:', path.relative('posts', file));
       continue;
     }
     
-    const fileTime = getFileTime(file.path);
+    const fileTime = getFileTime(file);
     if (fileTime > lastTime) {
-      const baseDir = file.type === 'page' ? 'pages' : 'posts';
       newFiles.push({
-        path: file.path,
-        type: file.type,
-        relativePath: path.relative(baseDir, file.path),
+        path: file,
+        relativePath: path.relative('posts', file),
         time: new Date(fileTime).toLocaleString()
       });
     }
@@ -165,28 +126,15 @@ async function main() {
   console.log(`\n扫描结果: ${allFiles.length} 个文件，${newFiles.length} 个需要处理`);
   
   if (newFiles.length === 0) {
-    console.log('没有需要处理的内容');
+    console.log('没有需要处理的文章');
     return;
   }
   
-  // 显示待处理列表（按类型分组）
-  console.log('\n待处理内容:');
-  const posts = newFiles.filter(f => f.type === 'post');
-  const pages = newFiles.filter(f => f.type === 'page');
-  
-  if (posts.length > 0) {
-    console.log(`\n文章 (${posts.length}):`)
-    posts.forEach((file, i) => {
-      console.log(`  ${i + 1}. ${file.relativePath} (${file.time})`);
-    });
-  }
-  
-  if (pages.length > 0) {
-    console.log(`\n页面 (${pages.length}):`)
-    pages.forEach((file, i) => {
-      console.log(`  ${i + 1}. ${file.relativePath} (${file.time})`);
-    });
-  }
+  // 显示待处理列表
+  console.log('\n待处理文章:');
+  newFiles.forEach((file, i) => {
+    console.log(`${i + 1}. ${file.relativePath} (${file.time})`);
+  });
   
   if (dryRun) {
     console.log('\n--dry-run 模式，未实际处理');
@@ -194,15 +142,14 @@ async function main() {
   }
   
   // 开始处理
-  console.log('\n开始处理内容...');
+  console.log('\n开始处理文章...');
   let success = 0;
   let failed = 0;
   const publishedUrls = [];
   
   for (let i = 0; i < newFiles.length; i++) {
     const file = newFiles[i];
-    const typeLabel = file.type === 'page' ? '页面' : '文章';
-    console.log(`\n[${i + 1}/${newFiles.length}] 处理${typeLabel}: ${file.relativePath}`);
+    console.log(`\n[${i + 1}/${newFiles.length}] 处理中: ${file.relativePath}`);
     
     try {
       const publishResult = await publishFile(file.path);
@@ -235,7 +182,7 @@ async function main() {
     saveCurrentTime();
     console.log('已更新时间戳');
   } else {
-    console.log('因为有失败的处理，时间戳未更新（下次会重试失败的内容）');
+    console.log('因为有失败的处理，时间戳未更新（下次会重试失败的文章）');
   }
 }
 
