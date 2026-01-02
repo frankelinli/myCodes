@@ -1,11 +1,24 @@
+/**
+ * 独立脚本：上传图片到 WordPress 媒体库并设置为文章特色图
+ * 
+ * 功能：
+ * - 上传本地图片到 WordPress 媒体库
+ * - 将上传的图片设置为指定文章的特色图（封面图）
+ * 
+ * 使用方法：
+ * node set_feature_image.js
+ * 
+ * 注意：需要修改代码中的图片路径和文章 ID
+ */
+
 import WPAPI from 'wpapi';
 import fs from 'fs';
 import path from 'path';
 
 // 从环境变量读取配置
-const WP_SITE = process.env.WP_SITE || 'https://haoyelaiga.com';
-const WP_USER = process.env.WP_USER || 'haoye';
-const WP_APP_PASS = process.env.WP_APP_PASS || 'WAd7X3Ei2YSCxHmP9PqdUKO5';
+const WP_SITE = process.env.WP_SITE;
+const WP_USER = process.env.WP_USER;
+const WP_APP_PASS = process.env.WP_APP_PASS;
 
 // 初始化 WordPress API 客户端
 const wp = new WPAPI({
