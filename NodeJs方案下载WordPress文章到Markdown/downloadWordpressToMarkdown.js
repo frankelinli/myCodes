@@ -18,10 +18,14 @@ let categoryArg = null;
 let categoryIdArg = null;
 let listCategories = false;
 let urlArg = null;
+let typeArg = "post"; // 默认为 post，可选 post 或 page
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === "--site" || a === "-s") {
     siteArg = args[i + 1];
+    i++;
+  } else if (a === "--type" || a === "-t") {
+    typeArg = args[i + 1];
     i++;
   } else if (a === "--category" || a === "-c") {
     categoryArg = args[i + 1];
@@ -149,21 +153,22 @@ async function main() {
       process.exit(1);
     }
     console.log(`🔍 从URL提取到slug: ${slug}`);
-    console.log(`🔍 正在获取文章...`);
+    console.log(`🔍 正在获取内容...`);
     
-    const res = await fetch(`${API_URL}/posts?slug=${slug}`);
+    const endpoint = typeArg === "page" ? "pages" : "posts";
+    const res = await fetch(`${API_URL}/${endpoint}?slug=${slug}`);
     if (!res.ok) {
       console.error(`❌ 请求失败，状态码: ${res.status}`);
       process.exit(1);
     }
-    const posts = await res.json();
-    if (!posts || posts.length === 0) {
-      console.error(`❌ 未找到slug为 "${slug}" 的文章`);
+    const items = await res.json();
+    if (!items || items.length === 0) {
+      console.error(`❌ 未找到slug为 "${slug}" 的${typeArg}`);
       process.exit(1);
     }
     
-    const post = posts[0];
-    console.log(`✅ 找到文章: ${post.title.rendered}`);
+    const post = items[0];
+    console.log(`✅ 找到内容: ${post.title.rendered}`);
     
     // 获取媒体信息（用于特色图片）
     console.log("🔍 获取媒体...");
@@ -173,6 +178,25 @@ async function main() {
     
     await savePostAsMarkdown(post, categories, tags, media);
     console.log(`\n🎉 下载完成！`);
+    return;
+  }
+
+  // --- 批量下载模式 ---
+  
+  if (typeArg === "page") {
+    console.log("🔍 准备获取所有 Page 页面...");
+    const pages = await getAll("pages");
+    console.log(`✅ 找到 ${pages.length} 个页面`);
+
+    console.log("🔍 获取媒体...");
+    const mediaArr = await getAll("media");
+    const media = {};
+    mediaArr.forEach((m) => (media[m.id] = m.source_url));
+
+    for (const page of pages) {
+      await savePostAsMarkdown(page, categories, tags, media);
+    }
+    console.log(`\n🎉 所有 Page 下载完成！`);
     return;
   }
 
@@ -231,10 +255,11 @@ async function savePostAsMarkdown(post, categories, tags, media) {
 
   const contentMd = await htmlToMarkdown(contentHtml);
 
-  const postCategories = post.categories.map(
+  // 处理分类和标签（Page 通常没有这些）
+  const postCategories = (post.categories || []).map(
     (cid) => categories[cid] || "uncategorized"
   );
-  const postTags = post.tags.map((tid) => tags[tid] || `tag-${tid}`);
+  const postTags = (post.tags || []).map((tid) => tags[tid] || `tag-${tid}`);
   // 已移除作者逻辑
 
   let featuredImage = null;
@@ -249,6 +274,7 @@ async function savePostAsMarkdown(post, categories, tags, media) {
     id: postId,
     title: title,
     slug: slug,
+    type: post.type, // 增加类型，区分 post 和 page
     date: date,
     categories: postCategories,
     tags: postTags,
@@ -262,9 +288,15 @@ async function savePostAsMarkdown(post, categories, tags, media) {
     `---\n${yaml.dump(frontMatter, { skipInvalid: true, lineWidth: -1 })}---\n\n` +
     contentMd;
 
-  // 以第一个分类为主目录，若无分类则放 uncategorized
-  const mainCategory = postCategories[0] || "uncategorized";
-  const categoryDir = path.join(SAVE_DIR, sanitizeFilename(mainCategory));
+  // 决定保存目录：若是 page 类型，存放在 pages/；若是 post，按分类存放
+  let targetSubDir = "uncategorized";
+  if (post.type === "page") {
+    targetSubDir = "pages";
+  } else if (postCategories.length > 0) {
+    targetSubDir = postCategories[0];
+  }
+
+  const categoryDir = path.join(SAVE_DIR, sanitizeFilename(targetSubDir));
   fs.mkdirSync(categoryDir, { recursive: true });
 
   const safeTitle = sanitizeFilename(title);

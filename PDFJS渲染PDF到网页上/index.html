@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF 查看器</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f0f0f0; font-family: Arial, sans-serif; }
+        #controls { background: #333; color: white; padding: 15px; text-align: center; }
+        #status { margin: 10px; font-size: 14px; }
+        input { padding: 8px; margin: 0 5px; }
+        button { padding: 8px 15px; background: #0066cc; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background: #0052a3; }
+        #container { max-width: 900px; margin: 10px auto; }
+        .page { background: white; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+        canvas { max-width: 70%; height: auto; display: block; }
+        .page-num { padding: 10px; color: #666; }
+    </style>
+</head>
+<body>
+
+   
+    <div id="controls">
+        <div id="status">加载中...</div>
+        <div>
+            页码: <input type="number" id="pageNum" min="1" value="1">
+            <button onclick="goToPage()">跳转</button>
+            <button onclick="prevPage()">上一页</button>
+            <button onclick="nextPage()">下一页</button>
+        </div>
+    </div>
+
+     <div style="max-width: 900px; margin: 10px auto; padding: 10px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi sit officiis beatae eos quas repellat, iusto esse praesentium dicta iste assumenda. Aspernatur excepturi incidunt quidem laudantium vero perferendis explicabo eveniet?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus corrupti nobis fugiat itaque qui labore eveniet ex quidem, quo aliquid doloremque error eos reprehenderit deserunt quos libero voluptates, consequuntur rem.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit cumque hic a amet neque reprehenderit inventore quis assumenda, exercitationem, ducimus esse, molestias voluptatum illum eveniet. Voluptas quae eum soluta sequi!
+    </div>
+
+    <div id="container"></div>
+
+    <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script src="viewer.js"></script>
+</body>
+</html>
