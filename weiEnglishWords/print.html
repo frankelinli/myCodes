@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>打印导出 - English Collector</title>
+    <link rel="stylesheet" href="print.css" />
+  </head>
+  <body>
+    <main class="print-app">
+      <header class="toolbar no-print">
+        <h1>英语复习打印页</h1>
+        <div class="actions">
+          <button id="printNowBtn">开始打印</button>
+        </div>
+      </header>
+
+      <section>
+        <p id="summaryText"></p>
+        <ol id="printList" class="print-list"></ol>
+      </section>
+    </main>
+
+    <script src="print.js"></script>
+  </body>
+</html>

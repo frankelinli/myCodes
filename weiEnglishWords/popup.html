@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Collector</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <h1>英语收藏夹</h1>
+        <p>浏览网页时选中文本，右键“收藏到英语剪藏”即可保存。</p>
+      </header>
+
+      <section class="card controls">
+        <h2>复习整理</h2>
+        <div class="row">
+          <input id="searchInput" type="text" placeholder="搜索文本" />
+          <select id="filterType">
+            <option value="all">全部</option>
+            <option value="favorite">仅收藏</option>
+          </select>
+        </div>
+        <div class="row">
+          <button id="randomBtn">随机复习</button>
+          <button id="exportJsonBtn">导出 JSON</button>
+          <button id="printBtn">打印导出</button>
+        </div>
+        <p id="reviewBox" class="review-box">点击“随机复习”开始。</p>
+      </section>
+
+      <section class="card list-card">
+        <h2>收藏列表</h2>
+        <p id="countText" class="count-text"></p>
+        <ul id="entryList" class="entry-list"></ul>
+      </section>
+    </main>
+
+    <template id="entryTemplate">
+      <li class="entry-item">
+        <div class="entry-main">
+          <p class="entry-text"></p>
+          <textarea class="translation-input" placeholder="在这里填写中文翻译"></textarea>
+          <button class="save-translation-btn" type="button">保存翻译</button>
+          <p class="entry-meta"></p>
+        </div>
+        <div class="entry-actions">
+          <button class="favorite-btn" type="button">☆</button>
+          <button class="delete-btn" type="button">删除</button>
+        </div>
+      </li>
+    </template>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

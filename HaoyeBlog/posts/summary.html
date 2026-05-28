@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>博客文章目录 · HaoyeBlog</title>
+<style>
+  :root {
+    --bg: #fffdf7;
+    --card: #ffffff;
+    --text: #2c2c2c;
+    --muted: #888;
+    --border: #e8e3d7;
+    --accent: #c75b39;
+    --tag-bg: #f5f0e6;
+    --tag-text: #8b7355;
+    --count-bg: #faf6ed;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--border);
+  }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  header .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  header .stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.2rem;
+  }
+  header .stat {
+    background: var(--count-bg);
+    border-radius: 8px;
+    padding: 0.3rem 1rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  header .stat b {
+    color: var(--accent);
+    font-size: 1.2rem;
+  }
+
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon { font-size: 1.1rem; }
+  .section-title .count {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: auto;
+  }
+
+  .file-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 0.5rem 1.5rem;
+  }
+  .file-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    transition: border-color 0.15s;
+  }
+  .file-card:hover { border-color: var(--accent); }
+  .file-card .name {
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: var(--text);
+    flex: 1;
+  }
+  .file-card .date {
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .file-card .tag {
+    font-size: 0.7rem;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📝 HaoyeBlog 文章目录</h1>
+  <div class="subtitle"><code>posts/</code> 目录下的所有 Markdown 文章汇总</div>
+  <div class="stats">
+    <div class="stat"><b>126</b> 篇文章</div>
+    <div class="stat"><b>9</b> 个分类</div>
+    <div class="stat">更新于 <b>2026-05-25</b></div>
+  </div>
+</header>
+
+<!-- ====== WordPress ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🎯</span> WordPress 开发
+    <span class="count">38 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">WordPress REST API简易指南</span><span class="tag">API</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress REST API 批量与增量发布技术记录</span><span class="tag">API</span><span class="date">2025-09-18</span></div>
+    <div class="file-card"><span class="name">WordPress Markdown自动发布系统</span><span class="tag">发布</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">WordPress后台发文和API发文的对比</span><span class="tag">API</span><span class="date">2024-12-04</span></div>
+    <div class="file-card"><span class="name">WordPress bloginfo等基本函数使用</span><span class="tag">函数</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">WordPress对象和数组的固定属性</span><span class="tag">PHP</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress的wp_enqueue_scripts钩子</span><span class="tag">钩子</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress admin ajax的简单示例-文章底部显示点赞数量</span><span class="tag">AJAX</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress子主题给全站图片增加特效</span><span class="tag">主题</span><span class="date">2025-09-18</span></div>
+    <div class="file-card"><span class="name">wordpress全站禁止鼠标复制文字和鼠标右键</span><span class="tag">功能</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress获取用户邮箱给他发邮件</span><span class="tag">功能</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">wordpress修改代码，在文章底部增加打赏按钮</span><span class="tag">功能</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress页面加载时显示过渡loading</span><span class="tag">CSS</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">wordpress 301重定向</span><span class="tag">SEO</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress实现网页顶部公告栏announcementbar.php</span><span class="tag">功能</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress给最近3篇文章弹出提醒通知</span><span class="tag">功能</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress给鼠标点击添加颜色效果</span><span class="tag">JS</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">wordpress根据URL中的关键词条件来弹出通知</span><span class="tag">JS</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">wordpress使用React列出站点全部帖子</span><span class="tag">React</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">WordPress网站实现弹出窗口的3种方案</span><span class="tag">前端</span><span class="date">2025-09-19</span></div>
+    <div class="file-card"><span class="name">WordPress制作文章顶部阅读进度条模板</span><span class="tag">模板</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress插件按需加载CSS-不要全局加载CSS</span><span class="tag">优化</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress显示访客IP和操作系统等信息</span><span class="tag">功能</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress浮动任务清单实现方案</span><span class="tag">功能</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">WordPress自带JQuery，不需要自己额外加载</span><span class="tag">优化</span><span class="date">2025-09-20</span></div>
+    <div class="file-card"><span class="name">WordPress管理后台设置里添加维护模式开关</span><span class="tag">后台</span><span class="date">2025-09-20</span></div>
+    <div class="file-card"><span class="name">WordPress图片相对地址</span><span class="tag">技巧</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">WordPress笔记</span><span class="tag">笔记</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">WordPress Jquery的美元符号</span><span class="tag">JS</span><span class="date">2025-02-05</span></div>
+    <div class="file-card"><span class="name">WordPress对搜索引擎要noindex日期、页面、作者等存档页</span><span class="tag">SEO</span><span class="date">2025-09-26</span></div>
+    <div class="file-card"><span class="name">wordpress如何设置媒体图片的尺寸？</span><span class="tag">媒体</span><span class="date">2025-10-02</span></div>
+    <div class="file-card"><span class="name">WordPress缓存插件wp super cache的技术原理</span><span class="tag">缓存</span><span class="date">2025-09-25</span></div>
+    <div class="file-card"><span class="name">WordPress设置文章内第一张图片为封面特色图片</span><span class="tag">媒体</span><span class="date">2025-10-15</span></div>
+    <div class="file-card"><span class="name">wp cli重构WordPress缩略图-删除未使用的旧图</span><span class="tag">CLI</span><span class="date">2025-10-07</span></div>
+    <div class="file-card"><span class="name">wordpress后台添加菜单-使用默认class</span><span class="tag">后台</span><span class="date">2025-10-20</span></div>
+    <div class="file-card"><span class="name">使用wpAPI上传图片到WordPress媒体库和设为特色封面图片的项目demo</span><span class="tag">API</span><span class="date">2025-10-13</span></div>
+    <div class="file-card"><span class="name">使用wp_enqueue_script来加载JS和CSS</span><span class="tag">钩子</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">使用wp-mail测试邮件功能</span><span class="tag">功能</span><span class="date">2025-10-07</span></div>
+  </div>
+</div>
+
+<!-- ====== 主题 & Astra ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🎨</span> WordPress 主题 / Astra
+    <span class="count">18 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">wordpress Astra主题钩子函数</span><span class="tag">钩子</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">wordpress主题开发_转载</span><span class="tag">教程</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">Astra主题文章CSS选择器示例 (2024/astra)</span><span class="tag">CSS</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">astra hook钩子 可视化动态工具</span><span class="tag">钩子</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">astra hook添加百度统计代码到网站head</span><span class="tag">钩子</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">astra header页眉下划线动画</span><span class="tag">CSS</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">astra post meta追加数据</span><span class="tag">钩子</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">astra主题使用钩子函数给单篇文章添加面包屑</span><span class="tag">钩子</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">add_post_meta()给文章添加阅读时间</span><span class="tag">meta</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">elementor自定义查询</span><span class="tag">Elementor</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">elementor toc移除左边margin</span><span class="tag">Elementor</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">elementor让元素自动滚动条</span><span class="tag">Elementor</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">修改elementor前一篇后一篇文章导航样式</span><span class="tag">Elementor</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">为何我制作的主题中不显示admin bar</span><span class="tag">主题</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">菜单栏添加astra钩子可视化按钮show_hooks=1</span><span class="tag">钩子</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">非常简单-Astra文章导航限定在当前分类内</span><span class="tag">导航</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">对普通访客和VIP显示不同的菜单</span><span class="tag">菜单</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">给WordPress文章的代码添加代码高亮功能，极简方案</span><span class="tag">样式</span><span class="date">2025-09-16</span></div>
+  </div>
+</div>
+
+<!-- ====== Markdown 发布系统 ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">📦</span> Markdown 发布系统 (remark 生态)
+    <span class="count">8 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">本地写Markdown，通过API发文章到WordPress</span><span class="tag">系统</span><span class="date">2025-09-22</span></div>
+    <div class="file-card"><span class="name">极简Markdown发布系统</span><span class="tag">系统</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">Node.js & unified/remark生态是处理 Markdown最完美的方案</span><span class="tag">Node</span><span class="date">2025-09-22</span></div>
+    <div class="file-card"><span class="name">remark渲染Markdown的插件顺序很重要</span><span class="tag">remark</span><span class="date">2025-10-16</span></div>
+    <div class="file-card"><span class="name">remark生态在Markdown里自定义文字高亮和tip提示</span><span class="tag">remark</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">remark-wordpress发布系统中自定义提示快Admonition插件说明</span><span class="tag">插件</span><span class="date">2025-10-07</span></div>
+    <div class="file-card"><span class="name">remark本地构建并发送到WordPress的meta description</span><span class="tag">SEO</span><span class="date">2025-09-25</span></div>
+    <div class="file-card"><span class="name">Markdown渲染为HTML时的allowDangeroursHTML</span><span class="tag">安全</span><span class="date">2025-09-21</span></div>
+  </div>
+</div>
+
+<!-- ====== PHP ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🐘</span> PHP 开发
+    <span class="count">7 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">PHP版本的API部署-静态网站使用PHP-API来动态服务</span><span class="tag">API</span><span class="date">2026-05-25</span></div>
+    <div class="file-card"><span class="name">nodejs和PHP创建一个API的区别-PHP完胜</span><span class="tag">对比</span><span class="date">2026-05-25</span></div>
+    <div class="file-card"><span class="name">PHP的fn箭头函数</span><span class="tag">语法</span><span class="date">2026-02-08</span></div>
+    <div class="file-card"><span class="name">PHP服务端给WordPress主菜单添加登录退出按钮</span><span class="tag">WordPress</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">独立PHP页面获取并展示WordPress的最近10个文章</span><span class="tag">WordPress</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">使用WordPress真实案例来讲解PHP语法</span><span class="tag">教程</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">多引入PHP文件不会增加http请求</span><span class="tag">原理</span><span class="date">2025-09-16</span></div>
+  </div>
+</div>
+
+<!-- ====== 油猴脚本 & 前端技巧 ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🐵</span> 油猴脚本 & 前端技巧
+    <span class="count">12 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">油猴脚本实现全网页通用的返回顶部功能</span><span class="tag">油猴</span><span class="date">2026-02-01</span></div>
+    <div class="file-card"><span class="name">油猴脚本给所有网页加一个"回到顶部"按钮</span><span class="tag">油猴</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">油猴脚本自动调整所有textarea行高</span><span class="tag">油猴</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">油猴脚本让任意网页的图片立体弹出</span><span class="tag">油猴</span><span class="date">2025-09-20</span></div>
+    <div class="file-card"><span class="name">preventDefault体验-原来SPA单页应用就是靠这个小函数</span><span class="tag">JS</span><span class="date">2026-02-01</span></div>
+    <div class="file-card"><span class="name">custom.js只在浏览器运行-搜索引擎看不到</span><span class="tag">JS</span><span class="date">2026-02-06</span></div>
+    <div class="file-card"><span class="name">精美的CSS伪元素制作价格标签页</span><span class="tag">CSS</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">12-23-CSS伪元素解释 (2024/notes)</span><span class="tag">CSS</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">CSS伪元素经典应用案例2 (2024/notes)</span><span class="tag">CSS</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">文字渐变</span><span class="tag">CSS</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">自己添加油猴脚本代码，让浏览器所有页面的滚动条变得更粗</span><span class="tag">CSS</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">最小JQuery TOC的设置相关</span><span class="tag">JS</span><span class="date">2024</span></div>
+  </div>
+</div>
+
+<!-- ====== 部署 & 运维 ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">⚙️</span> 部署 / 运维 / 服务器
+    <span class="count">9 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">SFTP_全面介绍和配置说明</span><span class="tag">SFTP</span><span class="date">2026-02-05</span></div>
+    <div class="file-card"><span class="name">同一个IP安装2个WordPress实战</span><span class="tag">部署</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">同一个IP我部署了2个站点，分别安装2个WordPress，可行吗？</span><span class="tag">部署</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">从腾讯云服务器上clone仓库到本地</span><span class="tag">Git</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">手机通过局域网访问本地开发的网页</span><span class="tag">调试</span><span class="date">2026-01-18</span></div>
+    <div class="file-card"><span class="name">bat脚本快速把本地WordPress开发部署到服务器上 (2024/notes)</span><span class="tag">脚本</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">functions php未能加载自定义JS的解决办法 (2024/notes)</span><span class="tag">故障</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">php文件开头不能有空格 (2024/notes)</span><span class="tag">技巧</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">inc里的小功能设置开启关闭按钮 (2024/notes)</span><span class="tag">模式</span><span class="date">2024</span></div>
+  </div>
+</div>
+
+<!-- ====== Python & 工具 ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🐍</span> Python & 开发工具
+    <span class="count">6 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">提高python小程序启动速度的一次优化记录</span><span class="tag">性能</span><span class="date">2026-01-15</span></div>
+    <div class="file-card"><span class="name">python虚拟环境</span><span class="tag">环境</span><span class="date">2026-02-01</span></div>
+    <div class="file-card"><span class="name">python客户端脚本连接服务器PHP来验证授权</span><span class="tag">授权</span><span class="date">2024</span></div>
+    <div class="file-card"><span class="name">picgo本地处理照片后在传到云存储桶</span><span class="tag">图片</span><span class="date">2025-09-25</span></div>
+    <div class="file-card"><span class="name">localsend超级好用传输文件超快</span><span class="tag">工具</span><span class="date">2026-01-29</span></div>
+    <div class="file-card"><span class="name">接受虚拟短信的服务关闭了</span><span class="tag">工具</span><span class="date">2026-01-10</span></div>
+  </div>
+</div>
+
+<!-- ====== ADB & 电视 ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">📺</span> ADB / 电视调试
+    <span class="count">4 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">ADB 命令列表（电视 Android 通用）</span><span class="tag">ADB</span><span class="date">2026-01-11</span></div>
+    <div class="file-card"><span class="name">ADB电视截屏</span><span class="tag">ADB</span><span class="date">2026-01-10</span></div>
+    <div class="file-card"><span class="name">海信电视电脑端遥控器（ADB控制）</span><span class="tag">ADB</span><span class="date">2026-01-11</span></div>
+    <div class="file-card"><span class="name">海信电视常用使用方法记录</span><span class="tag">电视</span><span class="date">2026-01-15</span></div>
+  </div>
+</div>
+
+<!-- ====== SEO & 搜索引擎 ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🔍</span> SEO / 搜索引擎优化
+    <span class="count">8 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">写SEO description的原则介绍</span><span class="tag">SEO</span><span class="date">2025-09-25</span></div>
+    <div class="file-card"><span class="name">搜索引擎的"noindex,follow"是什么意思</span><span class="tag">SEO</span><span class="date">2025-09-23</span></div>
+    <div class="file-card"><span class="name">从搜索结果中全面屏蔽CSDN无耻之徒</span><span class="tag">过滤</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">命令行代码推送网址到百度搜索引擎</span><span class="tag">百度</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">static构建和WordPress的完美结合</span><span class="tag">静态</span><span class="date">2025-09-20</span></div>
+    <div class="file-card"><span class="name">绝对不能在改动WordPress的固定链接！！！！！！</span><span class="tag">SEO</span><span class="date">2025-09-25</span></div>
+    <div class="file-card"><span class="name">云存储桶一定要用自己的域名，不然会后悔</span><span class="tag">CDN</span><span class="date">2025-09-26</span></div>
+    <div class="file-card"><span class="name">彻底禁用WordPress的XML-RPC</span><span class="tag">安全</span><span class="date">2025-09-25</span></div>
+  </div>
+</div>
+
+<!-- ====== 随笔 ====== -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">✍️</span> 个人随笔 & 杂记
+    <span class="count">16 篇</span>
+  </div>
+  <div class="file-list">
+    <div class="file-card"><span class="name">个人站长千万不要使用docusaurus建站的10个理由</span><span class="tag">建站</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">个人站长选择WordPress还是docusaurus</span><span class="tag">建站</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">不要操心别人，关注自己</span><span class="tag">感悟</span><span class="date">2025-09-21</span></div>
+    <div class="file-card"><span class="name">看见别人沉迷手机-我为何反感-心里分析</span><span class="tag">感悟</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">禁止折腾！</span><span class="tag">感悟</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">第一次做头等舱</span><span class="tag">生活</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">深圳大梅沙发生撞车事故</span><span class="tag">见闻</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">高中怼女生的一个回忆</span><span class="tag">回忆</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">制作软件和销售软件</span><span class="tag">创业</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">装修瓷砖地板</span><span class="tag">装修</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">作曲和编曲有何区别-以《青花瓷》为例</span><span class="tag">音乐</span><span class="date">2026-01-18</span></div>
+    <div class="file-card"><span class="name">脱离颓废环境，对自己的人生负责</span><span class="tag">感悟</span><span class="date">2025-09-16</span></div>
+    <div class="file-card"><span class="name">使用Jquery在浏览器控制台中调试任意网页</span><span class="tag">调试</span><span class="date">2026-01-30</span></div>
+    <div class="file-card"><span class="name">点击按钮随机去往某一篇文章-自定义端口API</span><span class="tag">功能</span><span class="date">2026-02-07</span></div>
+    <div class="file-card"><span class="name">百步印社器材参考打印机的配件好物</span><span class="tag">器材</span><span class="date">2026-03-14</span></div>
+    <div class="file-card"><span class="name">docusaurus页面调用WordPress文章 (2024/notes)</span><span class="tag">建站</span><span class="date">2024</span></div>
+  </div>
+</div>
+
+<footer>
+  共 <strong>126</strong> 篇文章 · 根目录 <code>C:\Users\wingxu\Desktop\myCodes\HaoyeBlog\posts</code> · 生成于 2026-05-25
+</footer>
+
+</body>
+</html>

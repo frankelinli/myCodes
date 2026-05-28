@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", sans-serif;
+  color: #1f2328;
+  background: #fff;
+}
+
+.print-app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 18px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.toolbar h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+button {
+  border: 1px solid #0969da;
+  background: #0969da;
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+#printList {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.print-item {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.print-item p {
+  margin: 0;
+}
+
+.print-item .meta {
+  margin-top: 6px;
+  color: #57606a;
+  font-size: 12px;
+}
+
+@media print {
+  .no-print {
+    display: none;
+  }
+
+  .print-app {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .print-item {
+    break-inside: avoid;
+  }
+}

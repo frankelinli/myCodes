@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微信支付解锁单篇文章 — WordPress 插件说明文档</title>
+<style>
+  :root {
+    --primary: #07c160;
+    --primary-dark: #06ad56;
+    --bg: #f5f5f5;
+    --card-bg: #fff;
+    --text: #333;
+    --text-secondary: #666;
+    --border: #e0e0e0;
+    --code-bg: #2d2d2d;
+    --code-text: #f8f8f2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #06ad56 100%);
+    color: #fff;
+    padding: 60px 20px 50px;
+    text-align: center;
+  }
+  .hero h1 { font-size: 2.2rem; margin-bottom: 10px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.9; }
+  .hero .badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 4px 16px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    font-size: 0.85rem;
+  }
+
+  /* Container */
+  .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+
+  /* Cards */
+  .card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .icon { font-size: 1.5rem; }
+
+  /* Tech tags */
+  .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .tag {
+    display: inline-block;
+    padding: 3px 12px;
+    background: #e8f8ef;
+    color: var(--primary-dark);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: #fafafa; font-weight: 600; font-size: 0.9rem; color: var(--text-secondary); }
+  td { font-size: 0.92rem; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Flow */
+  .flow { list-style: none; counter-reset: step; }
+  .flow li {
+    counter-increment: step;
+    position: relative;
+    padding: 14px 14px 14px 60px;
+    margin-bottom: 4px;
+    border-left: 2px solid var(--border);
+    margin-left: 20px;
+  }
+  .flow li:last-child { border-left-color: transparent; }
+  .flow li::before {
+    content: counter(step);
+    position: absolute;
+    left: -18px;
+    top: 12px;
+    width: 34px;
+    height: 34px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 34px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  /* Code */
+  code {
+    font-family: "Fira Code", "Consolas", "Monaco", monospace;
+    font-size: 0.88rem;
+    background: #f0f0f0;
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: #c7254e;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 18px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 14px 0;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* File list */
+  .file-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  .file-card .file-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .file-card .file-name { font-weight: 600; font-family: monospace; font-size: 0.92rem; }
+  .file-card .file-desc { font-size: 0.85rem; color: var(--text-secondary); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: #999;
+    font-size: 0.82rem;
+    padding: 30px 0 40px;
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+  <h1>微信支付解锁单篇文章阅读</h1>
+  <p class="subtitle">WordPress 插件 — 扫码支付后解锁付费内容</p>
+  <span class="badge">v1.0 &middot; 第一次跑通微信支付流程</span>
+</header>
+
+<div class="container">
+
+  <!-- 项目简介 -->
+  <section class="card">
+    <h2><span class="icon">📖</span> 项目简介</h2>
+    <p>
+      这是一个 <strong>WordPress 插件</strong>，实现<strong>微信支付扫码付费后解锁单篇文章</strong>的功能。
+      用户在 WordPress 文章中看到付费内容时，通过扫描微信支付二维码完成付款（固定 0.10 元），
+      支付成功后页面自动刷新并展示完整文章内容。无需依赖 WooCommerce、MemberPress 等复杂会员插件，
+      是一个轻量级的文章付费阅读解决方案。
+    </p>
+  </section>
+
+  <!-- 项目结构 -->
+  <section class="card">
+    <h2><span class="icon">📁</span> 项目结构</h2>
+    <div class="file-card">
+      <span class="file-icon">📄</span>
+      <div>
+        <div class="file-name">wechat-pay-simple.php</div>
+        <div class="file-desc">主插件文件 (29KB)，包含支付逻辑、Shortcode、AJAX、回调处理、数据库操作</div>
+      </div>
+    </div>
+    <div class="file-card">
+      <span class="file-icon">📧</span>
+      <div>
+        <div class="file-name">wechat-pay-email.php</div>
+        <div class="file-desc">邮件通知模块 (5KB)，支付成功后异步发送通知邮件给管理员</div>
+      </div>
+    </div>
+    <div class="file-card">
+      <span class="file-icon">📝</span>
+      <div>
+        <div class="file-name">第一次跑通了微信支付.md</div>
+        <div class="file-desc">中文开发说明文档</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技术栈 -->
+  <section class="card">
+    <h2><span class="icon">🛠</span> 技术栈</h2>
+    <table>
+      <tr><th>技术</th><th>用途</th></tr>
+      <tr><td>PHP 7+/8+</td><td>服务端逻辑</td></tr>
+      <tr><td>WordPress Plugin API</td><td>Shortcode、AJAX、Rewrite Rules、Cron、脚本加载</td></tr>
+      <tr><td>WordPress Database (wpdb)</td><td>自定义订单表创建与持久化</td></tr>
+      <tr><td>微信支付 V2 API</td><td>Native 模式统一下单（扫码支付）和支付结果通知</td></tr>
+      <tr><td>MD5 签名</td><td>微信支付 API 请求/响应签名校验</td></tr>
+      <tr><td>XML</td><td>与微信 API 通信的数据格式</td></tr>
+      <tr><td>QRCode.js</td><td>前端根据微信返回的 code_url 生成支付二维码</td></tr>
+      <tr><td>JavaScript (fetch / setInterval)</td><td>前端轮询支付状态</td></tr>
+      <tr><td>WordPress Cron</td><td>异步任务调度（延迟发送邮件）</td></tr>
+      <tr><td>wp_mail()</td><td>发送管理员支付通知邮件</td></tr>
+    </table>
+  </section>
+
+  <!-- 核心功能 -->
+  <section class="card">
+    <h2><span class="icon">⚡</span> 核心功能</h2>
+    <table>
+      <tr><th>功能</th><th>说明</th></tr>
+      <tr><td>Shortcode 包裹付费内容</td><td>使用 <code>[pay_content]...[/pay_content]</code> 包裹需要付费的文章内容</td></tr>
+      <tr><td>微信 Native 支付</td><td>调用微信统一下单 API，返回 code_url 生成支付二维码</td></tr>
+      <tr><td>前端实时轮询</td><td>每 2 秒通过 AJAX 检查订单支付状态，支付成功自动刷新</td></tr>
+      <tr><td>支付结果回调</td><td>接收微信服务端通知，MD5 签名验证后更新订单状态</td></tr>
+      <tr><td>7 天免支付 Cookie</td><td>支付成功后设置 Cookie，7 天内同一 IP 访问同一文章无需重复付费</td></tr>
+      <tr><td>管理员邮件通知</td><td>支付成功后异步发送 HTML 邮件通知管理员</td></tr>
+      <tr><td>PC / 移动端适配</td><td>桌面端展示二维码，移动端提示复制链接到电脑打开</td></tr>
+      <tr><td>自定义 Rewrite Rule</td><td>注册 <code>/wechat-pay-notify</code> 友好 URL 作为支付回调地址</td></tr>
+    </table>
+  </section>
+
+  <!-- 业务流程 -->
+  <section class="card">
+    <h2><span class="icon">🔄</span> 端到端业务流程</h2>
+    <ol class="flow">
+      <li>
+        <strong>作者发布文章</strong><br>
+        在 WordPress 文章中使用 <code>[pay_content]...[/pay_content]</code> Shortcode 包裹付费内容。
+      </li>
+      <li>
+        <strong>用户访问文章</strong><br>
+        Shortcode 回调检查用户是否已有支付 Cookie。若有，直接展示内容；若无，进入支付流程。
+      </li>
+      <li>
+        <strong>创建微信支付订单</strong><br>
+        插件调用微信统一下单 API <code>/pay/unifiedorder</code>，发送签名后的 XML 请求（金额 0.10 元、商品描述为文章标题、唯一订单号 WX+时间戳+随机数）。
+      </li>
+      <li>
+        <strong>展示二维码</strong><br>
+        微信返回 <code>code_url</code>，前端使用 QRCode.js 生成二维码。桌面端直接扫码，移动端提示复制链接。
+      </li>
+      <li>
+        <strong>用户扫码支付</strong><br>
+        用户打开微信扫描二维码，在微信内完成支付。
+      </li>
+      <li>
+        <strong>微信异步通知</strong><br>
+        微信服务器向 <code>/wechat-pay-notify</code> 发送 POST 请求。插件验证 MD5 签名后，将订单状态从 pending 更新为 paid，缓存回调数据，并调度 WP Cron 异步任务。
+      </li>
+      <li>
+        <strong>前端轮询检测到支付成功</strong><br>
+        浏览器每 2 秒 AJAX 查询订单状态。一旦检测到 paid，设置 7 天有效 Cookie，显示支付成功提示并刷新页面。
+      </li>
+      <li>
+        <strong>页面刷新 — 内容解锁</strong><br>
+        刷新后 Cookie 存在，Shortcode 直接渲染完整付费内容。
+      </li>
+      <li>
+        <strong>异步发送邮件</strong><br>
+        WP Cron 在回调 1 秒后触发，读取缓存的支付数据，发送包含订单号、金额、支付时间、购买者 OpenID、文章链接的 HTML 邮件给管理员。
+      </li>
+    </ol>
+  </section>
+
+  <!-- 数据库设计 -->
+  <section class="card">
+    <h2><span class="icon">🗄</span> 数据库设计</h2>
+    <p style="margin-bottom:12px;">插件自动创建自定义表 <code>wp_wechat_pay_orders</code>：</p>
+    <table>
+      <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+      <tr><td>id</td><td>INT (自增主键)</td><td>记录 ID</td></tr>
+      <tr><td>order_id</td><td>VARCHAR(64)</td><td>商户订单号</td></tr>
+      <tr><td>post_id</td><td>BIGINT</td><td>关联的文章 ID</td></tr>
+      <tr><td>code_url</td><td>TEXT</td><td>微信返回的二维码链接</td></tr>
+      <tr><td>status</td><td>VARCHAR(20)</td><td>订单状态：pending / paid</td></tr>
+      <tr><td>created_at</td><td>DATETIME</td><td>创建时间</td></tr>
+      <tr><td>paid_at</td><td>DATETIME</td><td>支付完成时间</td></tr>
+    </table>
+  </section>
+
+  <!-- 配置说明 -->
+  <section class="card">
+    <h2><span class="icon">⚙</span> 配置说明</h2>
+    <p>在 <code>wechat-pay-simple.php</code> 文件头部修改以下常量：</p>
+    <pre><code>define('WECHAT_PAY_APPID',     'your_appid');       // 微信商户 AppID
+define('WECHAT_PAY_MCHID',     'your_mchid');       // 微信商户号
+define('WECHAT_PAY_API_KEY',   'your_api_key');     // 微信商户 API 密钥
+define('WECHAT_PAY_TOTAL_FEE', '0.10');             // 固定支付金额（元）</code></pre>
+    <p style="margin-top:12px;">
+      安装方式：将 <code>wechat-pay-simple.php</code> 和 <code>wechat-pay-email.php</code> 放入
+      <code>wp-content/plugins/wechat-pay-simple/</code> 目录，在 WordPress 后台启用插件即可。
+    </p>
+  </section>
+
+  <!-- 使用方式 -->
+  <section class="card">
+    <h2><span class="icon">📝</span> 使用方式</h2>
+    <p>在文章编辑器中，用 Shortcode 包裹需要付费的内容：</p>
+    <pre><code>[pay_content]
+这里是需要付费才能阅读的精彩内容...
+可以包含文字、图片、任何 HTML。
+[/pay_content]
+
+免费内容直接写在 Shortcode 外面即可。</code></pre>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p>微信支付解锁单篇文章阅读 WordPress 插件 &middot; 第一个跑通微信支付流程的版本</p>
+</footer>
+
+</body>
+</html>

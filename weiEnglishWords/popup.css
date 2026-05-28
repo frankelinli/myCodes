@@ -1,0 +1,166 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", sans-serif;
+  background: #f7f8fa;
+  color: #1f2328;
+}
+
+.app {
+  width: 680px;
+  max-height: 620px;
+  overflow: auto;
+  padding: 14px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.header p {
+  margin: 6px 0 0;
+  color: #57606a;
+  font-size: 12px;
+}
+
+.card {
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+textarea,
+input,
+select,
+button {
+  font: inherit;
+}
+
+textarea,
+input,
+select {
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 70px;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.row > * {
+  flex: 1;
+}
+
+button {
+  border: 1px solid #0969da;
+  background: #0969da;
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.92;
+}
+
+.review-box {
+  margin-top: 8px;
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 8px;
+  min-height: 52px;
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+
+.count-text {
+  margin: 0 0 8px;
+  color: #57606a;
+  font-size: 12px;
+}
+
+.entry-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.entry-item {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.entry-text {
+  margin: 0;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.entry-meta {
+  margin: 6px 0 0;
+  color: #57606a;
+  font-size: 12px;
+}
+
+.translation-input {
+  margin-top: 8px;
+  width: 100%;
+  min-height: 56px;
+  resize: vertical;
+}
+
+.save-translation-btn {
+  margin-top: 6px;
+  width: auto;
+  padding: 6px 10px;
+}
+
+.entry-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.favorite-btn {
+  background: #f6f8fa;
+  color: #57606a;
+  border-color: #d0d7de;
+}
+
+.favorite-btn.active {
+  color: #bf8700;
+  border-color: #bf8700;
+  background: #fff8c5;
+}
+
+.delete-btn {
+  background: #cf222e;
+  border-color: #cf222e;
+}

@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sedex 审核信息收集表</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Microsoft YaHei", "微软雅黑", "SimSun", Arial, sans-serif;
+      font-size: 13px;
+      background: #e8ecf0;
+      padding: 24px 16px;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1020px;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 3px 16px rgba(0,0,0,0.14);
+      padding: 32px 36px 28px;
+      border-radius: 4px;
+    }
+
+    /* ---- 页眉 ---- */
+    .form-header {
+      text-align: center;
+      border-bottom: 2px solid #1a3a5c;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .form-header h1 {
+      font-size: 20px;
+      letter-spacing: 3px;
+      color: #1a3a5c;
+      font-weight: bold;
+    }
+    .form-header p {
+      font-size: 12px;
+      color: #777;
+      margin-top: 3px;
+      letter-spacing: 1px;
+    }
+
+    /* ---- 顶部元信息行 ---- */
+    .meta-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .meta-row label {
+      font-weight: 600;
+      margin-right: 6px;
+      white-space: nowrap;
+      color: #333;
+    }
+    .meta-row input[type="text"],
+    .meta-row input[type="date"] {
+      border: none;
+      border-bottom: 1.5px solid #1a3a5c;
+      padding: 3px 6px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      width: 220px;
+    }
+    .meta-row input[type="date"] { width: 150px; }
+
+    /* ---- 提示栏 ---- */
+    .notice {
+      background: #fffbe6;
+      border-left: 4px solid #faad14;
+      padding: 8px 14px;
+      margin-bottom: 22px;
+      font-size: 12.5px;
+      border-radius: 0 3px 3px 0;
+      line-height: 1.7;
+    }
+
+    /* ---- 分区块 ---- */
+    .section { margin-bottom: 26px; }
+
+    .section-header {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 7px 14px;
+      font-weight: bold;
+      font-size: 13.5px;
+      border-radius: 3px 3px 0 0;
+      letter-spacing: 1px;
+    }
+
+    .section-note {
+      padding: 6px 12px;
+      background: #f5f7fa;
+      font-size: 11.5px;
+      color: #666;
+      border: 1px solid #dde3ea;
+      border-top: none;
+      border-bottom: none;
+    }
+    .section-note.warn {
+      background: #fff4db;
+      color: #8a5a00;
+      border-color: #f0cf8a;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ---- 表格通用 ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #dce6f1;
+      font-weight: bold;
+      text-align: center;
+      padding: 7px 8px;
+      border: 1px solid #b0bec5;
+      font-size: 12.5px;
+      white-space: nowrap;
+      color: #1a3a5c;
+    }
+
+    td {
+      border: 1px solid #b0bec5;
+      padding: 4px 7px;
+      vertical-align: middle;
+      line-height: 1.5;
+    }
+
+    /* 分类单元格（左侧大类） */
+    .td-cat {
+      background: #dce6f1;
+      font-weight: bold;
+      text-align: center;
+      color: #1a3a5c;
+      font-size: 12.5px;
+    }
+
+    /* 标签单元格 */
+    .td-label {
+      background: #f5f8ff;
+      font-weight: 500;
+      color: #333;
+    }
+
+    /* 输入单元格 */
+    .td-input { background: #fff; }
+
+    /* 计算单元格（灰色，只读） */
+    .td-calc {
+      background: #d9d9d9;
+      text-align: center;
+      font-weight: 600;
+      color: #444;
+      cursor: not-allowed;
+      user-select: none;
+    }
+
+    /* 高亮合计 */
+    .td-calc.green {
+      background: #c6efce;
+      color: #1e6b2e;
+    }
+
+    /* 空行分隔 */
+    .tr-sep td {
+      height: 6px;
+      background: #eef2f7;
+      border-left: none;
+      border-right: none;
+    }
+
+    /* ---- 环境数据分组底色 ---- */
+    .env-electric td { background: #eef5ff; }
+    .env-electric .td-label { background: #dbeafe; }
+    .env-electric .td-calc { background: #cfe0fb; color: #204a87; }
+
+    .env-gas td { background: #fff6e8; }
+    .env-gas .td-label { background: #ffe3bf; }
+
+    .env-water td { background: #eefcf8; }
+    .env-water .td-label { background: #cfeee4; }
+
+    .env-waste td { background: #f7f1ff; }
+    .env-waste .td-label { background: #e6dafc; }
+
+    .env-product td { background: #fff7f0; }
+    .env-product .td-label { background: #ffd9bf; }
+
+    /* ---- 外发信息 ---- */
+    .yn-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 12px;
+      border: 1px solid #dde3ea;
+      border-top: none;
+      background: #fff;
+      flex-wrap: wrap;
+    }
+    .yn-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+    .yn-option input[type="radio"] {
+      width: auto;
+      accent-color: #1a7f37;
+      cursor: pointer;
+    }
+    .subcontract-wrap {
+      border: 1px solid #dde3ea;
+      border-top: none;
+      background: #fff;
+      padding: 14px 12px 2px;
+    }
+    .subcontract-title {
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .subcontract-card {
+      margin-bottom: 12px;
+      border: 1px solid #cfe7d7;
+      background: #f8fffa;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .subcontract-card h4 {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #1a3a5c;
+      background: #edf7ef;
+      border-bottom: 1px solid #d7eadb;
+    }
+    .subcontract-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 12px;
+    }
+    .subcontract-field label {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .subcontract-field input,
+    .subcontract-field textarea {
+      border: 1px solid #73a57a;
+      background: #b7e3ba;
+      border-radius: 3px;
+      padding: 8px 10px;
+    }
+    .process-table td {
+      padding: 10px 12px;
+    }
+    .process-table .td-label {
+      width: 34%;
+      background: #edf7ef;
+      font-weight: 600;
+    }
+    .process-table .td-input {
+      background: #f8fffa;
+    }
+    .process-table input,
+    .process-table textarea {
+      border: 1px solid #73a57a;
+      background: #b7e3ba;
+      border-radius: 3px;
+      padding: 8px 10px;
+    }
+
+    /* ---- 输入控件重置 ---- */
+    input[type="number"],
+    input[type="text"],
+    input[type="date"] {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 3px 4px;
+      outline: none;
+      color: #222;
+    }
+    input[type="number"] { text-align: center; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+    input[type="text"]   { text-align: left; }
+
+    textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 3px 4px;
+      outline: none;
+      color: #222;
+      resize: vertical;
+      min-height: 52px;
+    }
+
+    input:focus, textarea:focus {
+      background: #eaf4fd;
+      border-radius: 2px;
+    }
+
+    /* 占位符颜色 */
+    ::placeholder { color: #b0b8c4; font-size: 11.5px; }
+
+    /* ---- 操作按钮 ---- */
+    .actions {
+      text-align: center;
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e5ea;
+    }
+    .btn {
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 9px 32px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      margin: 0 6px;
+    }
+    .btn:hover { background: #27548a; }
+    .btn.secondary {
+      background: #fff;
+      color: #1a3a5c;
+      border: 1.5px solid #1a3a5c;
+    }
+    .btn.secondary:hover { background: #f0f4fa; }
+    .btn.success {
+      background: #27ae60;
+      color: #fff;
+    }
+    .btn.success:hover { background: #1e8449; }
+    .btn.warn {
+      background: #e67e22;
+      color: #fff;
+    }
+    .btn.warn:hover { background: #ca6f1e; }
+    .btn.small {
+      padding: 4px 12px;
+      font-size: 12px;
+      margin: 0;
+    }
+    .inline-status {
+      font-size: 12px;
+      color: #27ae60;
+      opacity: 0;
+      transition: opacity 0.25s;
+      white-space: nowrap;
+    }
+    .inline-status.show {
+      opacity: 1;
+    }
+    .save-status {
+      display: inline-block;
+      font-size: 12px;
+      color: #27ae60;
+      margin-left: 10px;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .save-status.show { opacity: 1; }
+
+    /* ---- 打印优化 ---- */
+    @media print {
+      body { background: #fff; padding: 0; font-size: 11px; }
+      .container { box-shadow: none; padding: 10px 14px; max-width: 100%; }
+      .actions { display: none; }
+      .notice { background: #f9f9f9; border-left: 3px solid #aaa; }
+      .section-header {
+        background: #333 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      th {
+        background: #dce6f1 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .td-calc {
+        background: #e0e0e0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .td-calc.green {
+        background: #c6efce !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .td-cat {
+        background: #dce6f1 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .td-label { background: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      input, textarea { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ========== 页眉 ========== -->
+  <div class="form-header">
+    <h1>Sedex 审核信息收集表</h1>
+    <p>Social Audit Information Collection Form</p>
+  </div>
+
+  <div class="meta-row">
+    <div>
+      <label>工厂名称：</label>
+      <input type="text" id="factory-name" placeholder="请填写工厂全称">
+    </div>
+    <div>
+      <label>填表日期：</label>
+      <input type="date" id="fill-date">
+    </div>
+    <div>
+      <label>填表人：</label>
+      <input type="text" id="fill-person" placeholder="姓名" style="width:120px">
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>填表说明：</strong>灰色区域为自动计算结果，<strong>无需手动填写</strong>。请在白色/浅色输入框中填入实际数据，表格将实时自动计算相关数据。
+  </div>
+
+
+  <!-- ========== 一、人员信息 ========== -->
+  <div class="section">
+    <div class="section-header">一、人员信息 &nbsp;/&nbsp; Workforce Information</div>
+    <table>
+      <colgroup>
+        <col style="width:9%">
+        <col style="width:24%">
+        <col style="width:8%">
+        <col style="width:8%">
+        <col style="width:8%">
+        <col style="width:12%">
+        <col style="width:12%">
+        <col style="width:19%">
+      </colgroup>
+      <tr>
+        <th>分类</th>
+        <th>岗位 / 说明</th>
+        <th>男</th>
+        <th>女</th>
+        <th>合计</th>
+        <th>男占比</th>
+        <th>女占比</th>
+        <th>全厂总人数</th>
+      </tr>
+
+      <!-- 生产工人 -->
+      <tr>
+        <td class="td-cat" rowspan="7">生产</td>
+        <td class="td-label">生产工人</td>
+        <td class="td-input"><input type="number" id="c3" min="0" value="6" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d3" min="0" value="7" oninput="recalc()"></td>
+        <td class="td-calc" id="e3">13</td>
+        <td class="td-calc" id="f3">46.2%</td>
+        <td class="td-calc" id="g3">53.8%</td>
+        <td class="td-calc green" id="i3" rowspan="7" style="font-size:22px;font-weight:700">15</td>
+      </tr>
+
+      <!-- 18-24岁 -->
+      <tr>
+        <td class="td-label" style="padding-left:18px;font-size:12px;color:#555">其中：18-24岁工人</td>
+        <td class="td-input"><input type="number" id="c4" min="0" value="1" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d4" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-calc" id="e4">1</td>
+        <td colspan="2" style="text-align:center;font-size:11.5px;color:#888;background:#fafcff">（仅供参考）</td>
+      </tr>
+
+      <!-- 最小年龄 -->
+      <tr>
+        <td class="td-label" style="padding-left:18px;font-size:12px;color:#555">其中：最小年龄（岁）</td>
+        <td class="td-input" colspan="2"><input type="number" id="c5" min="14" placeholder="全厂最小年龄" oninput="recalc()" style="text-align:left"></td>
+        <td class="td-calc" id="e5">-</td>
+        <td colspan="2" style="background:#fafcff"></td>
+      </tr>
+
+      <!-- 外省 -->
+      <tr>
+        <td class="td-label" style="padding-left:18px;font-size:12px;color:#555">其中：外省工人</td>
+        <td class="td-input"><input type="number" id="c6" min="0" value="5" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d6" min="0" value="7" oninput="recalc()"></td>
+        <td class="td-calc" id="e6">12</td>
+        <td class="td-calc" colspan="2" id="f6">外省占比 92%</td>
+      </tr>
+
+      <!-- 过去12个月入职 -->
+      <tr>
+        <td class="td-label" style="padding-left:18px;font-size:12px;color:#555">其中：过去12个月入职</td>
+        <td class="td-input"><input type="number" id="c7a" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d7a" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-calc" id="e7a">0</td>
+        <td colspan="2" style="text-align:center;font-size:11.5px;color:#888;background:#fafcff">男 / 女 / 合计</td>
+      </tr>
+
+      <!-- 达到退休年龄 -->
+      <tr>
+        <td class="td-label" style="padding-left:18px;font-size:12px;color:#555">其中：达到退休年龄</td>
+        <td class="td-input"><input type="number" id="c7b" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d7b" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-calc" id="e7b">0</td>
+        <td colspan="2" class="td-calc" id="f7b">男 0 / 女 0 / 合计 0</td>
+      </tr>
+
+      <!-- 外省5省 -->
+      <tr>
+        <td class="td-label" style="padding-left:18px;font-size:12px;color:#555">外省最多的5个省份</td>
+        <td colspan="4" class="td-input">
+          <input type="text" id="c7" value="Hunan, Hubei, Guizhou, Sichuan, Jiangxi" placeholder="如：湖南, 湖北, 贵州, 四川, 江西">
+        </td>
+      </tr>
+
+      <!-- 高管 -->
+      <tr>
+        <td class="td-cat" rowspan="3">非生产</td>
+        <td class="td-label">高管级别</td>
+        <td class="td-input"><input type="number" id="c9" min="0" value="1" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d9" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-calc" id="e9">1</td>
+        <td colspan="3" style="background:#fafcff"></td>
+      </tr>
+
+      <!-- 主管 -->
+      <tr>
+        <td class="td-label">主管级别</td>
+        <td class="td-input"><input type="number" id="c10" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d10" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-calc" id="e10">0</td>
+        <td colspan="3" style="background:#fafcff"></td>
+      </tr>
+
+      <!-- 行政财务 -->
+      <tr>
+        <td class="td-label">行政、财务、研发、后勤等</td>
+        <td class="td-input"><input type="number" id="c11" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d11" min="0" value="1" oninput="recalc()"></td>
+        <td class="td-calc" id="e11">1</td>
+        <td colspan="3" style="background:#fafcff"></td>
+      </tr>
+    </table>
+  </div>
+
+
+  <!-- ========== 二、抽样信息 ========== -->
+  <div class="section">
+    <div class="section-header">二、抽样信息 &nbsp;/&nbsp; Sampling Information</div>
+    <table>
+      <colgroup>
+        <col style="width:40%">
+        <col style="width:13%">
+        <col style="width:13%">
+        <col style="width:13%">
+        <col style="width:21%">
+      </colgroup>
+      <tr>
+        <th>说明</th><th>男</th><th>女</th><th>共抽样人数</th><th>备注</th>
+      </tr>
+      <tr>
+        <td class="td-label">抽样人数（合计）</td>
+        <td class="td-input"><input type="number" id="c15" min="0" value="6" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d15" min="0" value="4" oninput="recalc()"></td>
+        <td class="td-calc" id="e15">10</td>
+        <td style="background:#fafcff"></td>
+      </tr>
+      <tr>
+        <td class="td-label" style="padding-left:18px;font-size:12px;color:#555">其中：外省工人</td>
+        <td class="td-input"><input type="number" id="c16" min="0" value="5" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d16" min="0" value="4" oninput="recalc()"></td>
+        <td class="td-calc" id="e16">9</td>
+        <td style="background:#fafcff"></td>
+      </tr>
+    </table>
+  </div>
+
+
+  <!-- ========== 三、证件与许可证 ========== -->
+  <div class="section">
+    <div class="section-header">三、证件与许可证 &nbsp;/&nbsp; Certificates &amp; Permits</div>
+    <table>
+      <colgroup>
+        <col style="width:20%">
+        <col style="width:28%">
+        <col style="width:15%">
+        <col style="width:37%">
+      </colgroup>
+      <tr>
+        <th>证件名称</th>
+        <th>证件 / 报告编号</th>
+        <th>颁发日期</th>
+        <th>有效期（无固定期限请填"长期"）</th>
+      </tr>
+      <tr>
+        <td class="td-label">营业执照</td>
+        <td class="td-input"><input type="text" id="b22" value="91440111340203752A"></td>
+        <td class="td-input"><input type="date" id="c22" value="2015-05-15"></td>
+        <td class="td-input"><input type="text" id="d22" value="无固定期限"></td>
+      </tr>
+      <tr>
+        <td class="td-label">消防验收报告</td>
+        <td class="td-input"><input type="text" id="b23" value="穗公白消（建验）字[2010] 第0124号"></td>
+        <td class="td-input"><input type="date" id="c23" value="2010-06-21"></td>
+        <td class="td-input"><input type="text" id="d23" placeholder="填写有效期或长期"></td>
+      </tr>
+      <tr>
+        <td class="td-label">竣工验收报告</td>
+        <td class="td-input"><input type="text" id="b24" value="GD301521"></td>
+        <td class="td-input"><input type="date" id="c24" value="2010-04-20"></td>
+        <td class="td-input"><input type="text" id="d24" placeholder="填写有效期或长期"></td>
+      </tr>
+      <tr>
+        <td class="td-label" rowspan="3" style="vertical-align:top;padding-top:8px">其他安全、<br>环保相关证书</td>
+        <td class="td-input"><input type="text" id="b25" placeholder="证件/报告编号"></td>
+        <td class="td-input"><input type="date" id="c25"></td>
+        <td class="td-input"><input type="text" id="d25" placeholder="有效期"></td>
+      </tr>
+      <tr>
+        <td class="td-input"><input type="text" id="b26" placeholder="证件/报告编号"></td>
+        <td class="td-input"><input type="date" id="c26"></td>
+        <td class="td-input"><input type="text" id="d26" placeholder="有效期"></td>
+      </tr>
+      <tr>
+        <td class="td-input"><input type="text" id="b27" placeholder="证件/报告编号"></td>
+        <td class="td-input"><input type="date" id="c27"></td>
+        <td class="td-input"><input type="text" id="d27" placeholder="有效期"></td>
+      </tr>
+    </table>
+    <div style="margin-top:10px;background:#f5f8ff;border:1px solid #dde3ea;border-radius:3px;padding:10px 14px">
+      <div style="font-size:11.5px;color:#888;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <span>自动合成（以下段落可直接复制给 AI）</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="cert-copy-status" class="inline-status"></span>
+          <button type="button" class="btn secondary small" onclick="copyCertSummary()">复制</button>
+        </div>
+      </div>
+      <div id="cert-summary" style="font-size:13px;color:#222;line-height:2;white-space:pre-wrap"></div>
+    </div>
+  </div>
+
+
+  <!-- ========== 四、离职率与缺勤率 ========== -->
+  <div class="section">
+    <div class="section-header">四、离职率与缺勤率 &nbsp;/&nbsp; Employee Turnover &amp; Absenteeism Rate (%)</div>
+    <div class="section-note">
+      <strong>离职率：</strong>过去12个月内离职员工数占全年现场平均员工总数的百分比。<br>
+      <strong>输入格式：百分比数值</strong>，例如输入 <strong>6.7</strong> 表示 6.7%。合计列自动相加。
+    </div>
+    <table>
+      <colgroup>
+        <col style="width:18%">
+        <col style="width:22%">
+        <col style="width:18%">
+        <col style="width:18%">
+        <col style="width:24%">
+      </colgroup>
+      <tr>
+        <th colspan="2">时间段</th>
+        <th>男（%）</th>
+        <th>女（%）</th>
+        <th>合计（%）</th>
+      </tr>
+      <tr>
+        <td class="td-label" rowspan="3">员工流失率</td>
+        <td class="td-label">上季度（近90天） / Last full quarter (90 days)</td>
+        <td class="td-input"><input type="number" id="c32" min="0" max="100" step="0.1" value="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d32" min="0" max="100" step="0.1" value="6.7" oninput="recalc()"></td>
+        <td class="td-calc" id="e32">6.7%</td>
+      </tr>
+      <tr>
+        <td class="td-label">2025年（全年） / Last full calendar year (2025)</td>
+        <td class="td-input"><input type="number" id="c33" min="0" max="100" step="0.1" value="6.7" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d33" min="0" max="100" step="0.1" value="0" oninput="recalc()"></td>
+        <td class="td-calc" id="e33">6.7%</td>
+      </tr>
+      <tr>
+        <td class="td-label">2024年（全年） / Previous full calendar year (2024)</td>
+        <td class="td-input"><input type="number" id="c34" min="0" max="100" step="0.1" value="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d34" min="0" max="100" step="0.1" value="6.7" oninput="recalc()"></td>
+        <td class="td-calc" id="e34">6.7%</td>
+      </tr>
+    </table>
+    <div class="section-note" style="border-top:none;margin-top:10px">
+      <strong>缺勤率 / Rate of absenteeism (%):</strong><br>
+      年度缺勤率计算公式为：年内因缺勤损失的总天数 ÷ [（年初员工人数 + 年末员工人数）÷ 2] ÷ 年度可工作天数。<br>
+      如无可用数据，可留空不填。
+    </div>
+    <table>
+      <colgroup>
+        <col style="width:18%">
+        <col style="width:22%">
+        <col style="width:18%">
+        <col style="width:18%">
+        <col style="width:24%">
+      </colgroup>
+      <tr>
+        <th colspan="2"></th>
+        <th>Men</th>
+        <th>Women</th>
+        <th>Total workers</th>
+      </tr>
+      <tr>
+        <td class="td-label" rowspan="3">缺勤率</td>
+        <td class="td-label">Last full quarter (90 days)</td>
+        <td class="td-input"><input type="number" id="c35" min="0" max="100" step="0.1" value="2" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d35" min="0" max="100" step="0.1" value="2" oninput="recalc()"></td>
+        <td class="td-calc" id="e35">4.0%</td>
+      </tr>
+      <tr>
+        <td class="td-label">Last full calendar year (2025)</td>
+        <td class="td-input"><input type="number" id="c36" min="0" max="100" step="0.1" value="3" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d36" min="0" max="100" step="0.1" value="3" oninput="recalc()"></td>
+        <td class="td-calc" id="e36">6.0%</td>
+      </tr>
+      <tr>
+        <td class="td-label">Previous full calendar year (2024)</td>
+        <td class="td-input"><input type="number" id="c37" min="0" max="100" step="0.1" value="3" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d37" min="0" max="100" step="0.1" value="3" oninput="recalc()"></td>
+        <td class="td-calc" id="e37">6.0%</td>
+      </tr>
+    </table>
+  </div>
+
+
+  <!-- ========== 五、环境数据 ========== -->
+  <div class="section">
+    <div class="section-header">五、环境数据 &nbsp;/&nbsp; Environmental Data</div>
+    <div class="section-note warn">⚠️ 提示：<strong>4P</strong> 需填写本节；<strong>2P</strong> 不用填写。</div>
+    <table>
+      <colgroup>
+        <col style="width:56%">
+        <col style="width:22%">
+        <col style="width:22%">
+      </colgroup>
+      <tr>
+        <th>指标</th>
+        <th>2025年</th>
+        <th>2024年</th>
+      </tr>
+      <tr class="env-electric">
+        <td class="td-label">非可再生能源用电量（单位：千瓦时 kWh） / Total electricity consumption from non-renewable sources (kWh)<br><span style="display:block;margin-top:4px;font-size:11px;font-weight:400;color:#666;line-height:1.5">如：市电、电网购电等。Example: grid electricity, purchased electricity.</span></td>
+        <td class="td-input"><input type="number" id="c38" min="0" value="44417" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d38" min="0" value="44026" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-electric">
+        <td class="td-label">可再生能源用电量（单位：千瓦时 kWh） / Total electricity consumption from renewable sources (kWh)<br><span style="display:block;margin-top:4px;font-size:11px;font-weight:400;color:#666;line-height:1.5">如：太阳能、风能、水电等。Example: solar, wind, hydropower.</span></td>
+        <td class="td-input"><input type="number" id="c39" min="0" value="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d39" min="0" value="0" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-gas">
+        <td class="td-label">天然气总消耗量（单位：立方 m³）</td>
+        <td class="td-input"><input type="number" id="c40" min="0" step="0.001" placeholder="填写立方数" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d40" min="0" step="0.001" placeholder="填写立方数" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-gas">
+        <td class="td-label" style="font-size:12px;color:#555">天然气总消耗量（自动换算，单位：千瓦时 kWh）<br><span style="display:block;margin-top:4px;font-size:11px;font-weight:400;color:#8a5a00;line-height:1.5">换算公式：m³ × 40 × 1.02264 ÷ 3.6</span></td>
+        <td class="td-calc" id="e40_kwh">-</td>
+        <td class="td-calc" id="f40_kwh">-</td>
+      </tr>
+      <tr class="env-gas">
+        <td class="td-label">其他外购燃料使用情况 / Usage of other purchased fuels<br><span style="display:block;margin-top:4px;font-size:11px;font-weight:400;color:#666;line-height:1.5">请注明燃料类型，如煤、液化石油气、汽油等；计量单位，如加仑、升；以及使用量。Specify type (e.g., coal, LPG, petrol, etc.), unit of measure (e.g., gallons, litre) and volume used.</span></td>
+        <td class="td-input"><textarea id="c40a" placeholder="如：LPG，升，1200"></textarea></td>
+        <td class="td-input"><textarea id="d40a" placeholder="如：煤，吨，3.5"></textarea></td>
+      </tr>
+      <tr class="env-water">
+        <td class="td-label">用水量（m³） / Water volume used (m³)</td>
+        <td class="td-input"><input type="number" id="c41" min="0" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d41" min="0" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-water">
+        <td class="td-label">
+          排放水去向 / Water discharged<br>
+          <span style="display:block;margin-top:4px;font-size:11px;font-weight:400;color:#666;line-height:1.5">请列出排放区域，例如地表水、地下水、海水等。List areas of discharge by destination, e.g. surface water, ground water, seawater, etc.</span>
+        </td>
+        <td class="td-input"><textarea id="c41a"></textarea></td>
+        <td class="td-input"><textarea id="d41a"></textarea></td>
+      </tr>
+      <tr class="env-water">
+        <td class="td-label">排放水量（m³） / Water volume discharged (m³)</td>
+        <td class="td-input"><input type="number" id="c41b" min="0" step="0.001" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d41b" min="0" step="0.001" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-water">
+        <td class="td-label">回收水量（m³） / Water volume recycled (m³)</td>
+        <td class="td-input"><input type="number" id="c41c" min="0" step="0.001" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d41c" min="0" step="0.001" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-waste">
+        <td class="td-label">废弃物总量（mt） / Total waste produced (mt)</td>
+        <td class="td-input"><input type="number" id="c42" min="0" step="0.001" placeholder="吨" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d42" min="0" step="0.001" placeholder="吨" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-waste">
+        <td class="td-label">危险废弃物总量（mt） / Total hazardous waste produced (mt)</td>
+        <td class="td-input"><input type="number" id="c43" min="0" step="0.001" oninput="recalc()"></td>
+        <td class="td-input"><input type="number" id="d43" min="0" step="0.001" oninput="recalc()"></td>
+      </tr>
+      <tr class="env-waste">
+        <td class="td-label">送去回收的废弃物（mt） / Waste to recycling (mt)</td>
+        <td class="td-input"><input type="number" id="c44" min="0" step="0.001"></td>
+        <td class="td-input"><input type="number" id="d44" min="0" step="0.001"></td>
+      </tr>
+      <tr class="env-waste">
+        <td class="td-label">送去填埋的废弃物（mt） / Waste to landfill (mt)</td>
+        <td class="td-input"><input type="number" id="c45" min="0" step="0.001"></td>
+        <td class="td-input"><input type="number" id="d45" min="0" step="0.001"></td>
+      </tr>
+      <tr class="env-waste">
+        <td class="td-label">其他去向的废弃物（mt） / Waste to other (mt)</td>
+        <td class="td-input"><input type="number" id="c46" min="0" step="0.001"></td>
+        <td class="td-input"><input type="number" id="d46" min="0" step="0.001"></td>
+      </tr>
+      <tr class="env-product">
+        <td class="td-label">产品总重量（mt） / Total product produced (mt)<br><span style="display:block;margin-top:4px;font-size:11px;font-weight:400;color:#666;line-height:1.5">请估算每年度所生产的产品的总重量。</span></td>
+        <td class="td-input"><input type="number" id="c47" min="0" step="0.001"></td>
+        <td class="td-input"><input type="number" id="d47" min="0" step="0.001"></td>
+      </tr>
+    </table>
+  </div>
+
+
+  <!-- ========== 六、工资信息 ========== -->
+  <div class="section">
+    <div class="section-header">六、工资信息 &nbsp;/&nbsp; Wage Information</div>
+    <div class="section-note">
+      计算依据：月薪 ÷ 21.75工作日 ÷ 8小时 = 时薪；加班费时薪 = 时薪 × 1.5。
+      仅需填入<strong>每月工资</strong>，其余自动计算。
+    </div>
+    <table>
+      <colgroup>
+        <col style="width:30%">
+        <col style="width:17.5%">
+        <col style="width:17.5%">
+        <col style="width:17.5%">
+        <col style="width:17.5%">
+      </colgroup>
+      <tr>
+        <th>类别</th>
+        <th>每小时（元）</th>
+        <th>每天（元）</th>
+        <th>每周（元）</th>
+        <th>每月（元）</th>
+      </tr>
+
+      <!-- 法定最低工资 -->
+      <tr>
+        <td class="td-label">法定最低工资</td>
+        <td class="td-calc" id="b49">-</td>
+        <td class="td-calc" id="c49">-</td>
+        <td class="td-calc" id="d49">-</td>
+        <td class="td-input"><input type="number" id="e49" min="0" value="2500" oninput="recalc()"></td>
+      </tr>
+      <tr>
+        <td class="td-label" style="font-size:12px;color:#555">法定最低加班费（时薪 × 1.5）</td>
+        <td class="td-calc" id="b50">-</td>
+        <td colspan="3" style="background:#f5f5f5;text-align:center;font-size:11.5px;color:#888">日/周加班费请按实际加班时数另行计算</td>
+      </tr>
+
+      <tr class="tr-sep"><td colspan="5"></td></tr>
+
+      <!-- 工厂实际最低工资 -->
+      <tr>
+        <td class="td-label">工厂实际给的最低工资</td>
+        <td class="td-calc" id="b54">-</td>
+        <td class="td-calc" id="c54">-</td>
+        <td class="td-calc" id="d54">-</td>
+        <td class="td-input"><input type="number" id="e54" min="0" value="2500" oninput="recalc()"></td>
+      </tr>
+      <tr>
+        <td class="td-label" style="font-size:12px;color:#555">工厂实际最低加班费（时薪 × 1.5）</td>
+        <td class="td-calc" id="b55">-</td>
+        <td colspan="3" style="background:#f5f5f5;text-align:center;font-size:11.5px;color:#888">日/周加班费请按实际加班时数另行计算</td>
+      </tr>
+    </table>
+  </div>
+
+
+  <!-- ========== 七、厂房信息 ========== -->
+  <div class="section">
+    <div class="section-header">七、厂房信息 &nbsp;/&nbsp; Factory Building Information</div>
+
+    <!-- 厂房 1 -->
+    <table style="margin-bottom:14px">
+      <tr>
+        <th colspan="2" style="text-align:left">厂房 1 / Building 1</th>
+      </tr>
+      <tr>
+        <td class="td-label" style="width:32%">哪一年竣工？（Year of completion）</td>
+        <td class="td-input"><input type="number" id="c58" min="1900" max="2100" value="2010" placeholder="如：2010"></td>
+      </tr>
+      <tr>
+        <td class="td-label">总建筑面积（Total floor area）</td>
+        <td class="td-input"><input type="text" id="c60" value="工厂只用400平米" placeholder="如：1200㎡"></td>
+      </tr>
+      <tr>
+        <td class="td-label" style="vertical-align:top;padding-top:8px">楼层布局<br>（每层用途 / 生产流程）</td>
+        <td class="td-input"><textarea id="c61">cutting, sewing, ironing, inspection and packing</textarea></td>
+      </tr>
+    </table>
+
+    <!-- 厂房 2 -->
+    <table style="margin-bottom:10px">
+      <tr>
+        <th colspan="2" style="text-align:left">厂房 2 / Building 2（如有）</th>
+      </tr>
+      <tr>
+        <td class="td-label" style="width:32%">哪一年竣工？</td>
+        <td class="td-input"><input type="number" id="c64" min="1900" max="2100" placeholder="如：2015"></td>
+      </tr>
+      <tr>
+        <td class="td-label">总建筑面积</td>
+        <td class="td-input"><input type="text" id="c66" placeholder="如：800㎡"></td>
+      </tr>
+      <tr>
+        <td class="td-label" style="vertical-align:top;padding-top:8px">楼层布局</td>
+        <td class="td-input"><textarea id="c67" placeholder="描述每层的用途/生产流程"></textarea></td>
+      </tr>
+    </table>
+
+    <!-- 厂房 3 -->
+    <table style="margin-bottom:10px">
+      <tr>
+        <th colspan="2" style="text-align:left">厂房 3 / Building 3（如有）</th>
+      </tr>
+      <tr>
+        <td class="td-label" style="width:32%">哪一年竣工？</td>
+        <td class="td-input"><input type="number" id="c68" min="1900" max="2100" placeholder="如：2018"></td>
+      </tr>
+      <tr>
+        <td class="td-label">总建筑面积</td>
+        <td class="td-input"><input type="text" id="c69" placeholder="如：600㎡"></td>
+      </tr>
+      <tr>
+        <td class="td-label" style="vertical-align:top;padding-top:8px">楼层布局</td>
+        <td class="td-input"><textarea id="c70" placeholder="描述每层的用途/生产流程"></textarea></td>
+      </tr>
+    </table>
+
+    <div style="padding:7px 12px;background:#fffbe6;border:1px solid #ffe58f;font-size:12px;border-radius:3px;color:#666">
+      如有更多楼栋，请按上方格式继续填写。
+    </div>
+  </div>
+
+
+  <!-- ========== 八、产品和生产流程 ========== -->
+  <div class="section">
+    <div class="section-header">八、产品和生产流程 &nbsp;/&nbsp; Products &amp; Process Overview</div>
+    <div class="subcontract-wrap" style="display:block;padding-bottom:12px">
+      <table class="process-table">
+        <tr>
+          <td class="td-label">产品类型 / Product type</td>
+          <td class="td-input"><input type="text" id="product-produced" value="leather"></td>
+        </tr>
+        <tr>
+          <td class="td-label">主要工序 / Main operations</td>
+          <td class="td-input"><textarea id="main-operations">cutting, sewing, handwork, hardware, inspection, packaging.</textarea></td>
+        </tr>
+        <tr>
+          <td class="td-label">生产线数量 / Number of production lines</td>
+          <td class="td-input"><input type="text" id="production-lines" value="1."></td>
+        </tr>
+        <tr>
+          <td class="td-label">主要设备 / Main equipment used</td>
+          <td class="td-input"><textarea id="main-equipment">machines for cutting and sewing.</textarea></td>
+        </tr>
+      </table>
+      <div style="margin-top:10px;background:#f5f8ff;border:1px solid #dde3ea;border-radius:3px;padding:10px 14px">
+        <div style="font-size:11.5px;color:#888;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span>自动汇总（以下段落可直接复制）</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="process-copy-status" class="inline-status"></span>
+            <button type="button" class="btn secondary small" onclick="copySummaryText('process-summary', 'process-copy-status')">复制</button>
+          </div>
+        </div>
+        <div id="process-summary" style="font-size:13px;color:#222;line-height:2;white-space:pre-wrap"></div>
+      </div>
+    </div>
+    <div class="yn-row">
+      <div style="font-weight:600;color:#333">是否有外发？ / Are any sub-contractors used?</div>
+      <label class="yn-option">
+        <input type="radio" id="subcontract-yes" name="subcontract-used" value="yes">
+        <span>是 / Yes</span>
+      </label>
+      <label class="yn-option">
+        <input type="radio" id="subcontract-no" name="subcontract-used" value="no">
+        <span>否 / No</span>
+      </label>
+    </div>
+    <div class="subcontract-wrap" id="subcontract-details" style="display:none">
+      <div class="subcontract-title">请填写每个外发供应商的信息 / Provide details for each sub-contractor</div>
+      <div class="subcontract-card">
+        <h4>外发供应商 1 / Sub-contractor 1</h4>
+        <div class="subcontract-grid">
+          <div class="subcontract-field">
+            <label for="sub-process-1">外发工序 / Process subcontracted</label>
+            <input type="text" id="sub-process-1">
+          </div>
+          <div class="subcontract-field">
+            <label for="sub-factory-1">工厂名称 / Name of factory</label>
+            <input type="text" id="sub-factory-1">
+          </div>
+          <div class="subcontract-field">
+            <label for="sub-address-1">地址 / Address</label>
+            <textarea id="sub-address-1"></textarea>
+          </div>
+          <div class="subcontract-field">
+            <label for="sub-dates-1">使用时间 / Dates used</label>
+            <input type="text" id="sub-dates-1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========== 操作按钮 ========== -->
+  <div class="actions">
+    <button class="btn success" onclick="exportJSON()">导出 JSON</button>
+    <button class="btn warn" onclick="document.getElementById('import-json-input').click()">导入 JSON</button>
+    <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="importJSON(this)">
+    <button class="btn" onclick="window.print()">打印 / Print</button>
+    <button class="btn secondary" onclick="resetForm()">重置表单</button>
+  </div>
+
+</div><!-- /container -->
+
+
+<script>
+/* ============================================================
+   工具函数
+   ============================================================ */
+function $v(id) {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  return parseFloat(el.value) || 0;
+}
+
+function $set(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+/** 格式化数字，默认不保留小数 */
+function fmt(v, dec) {
+  dec = dec === undefined ? 0 : dec;
+  if (!isFinite(v) || isNaN(v)) return '-';
+  return v.toFixed(dec);
+}
+
+/** 格式化为百分比，v 为 0~1 范围的小数 */
+function fmtPct(v, dec) {
+  dec = dec === undefined ? 1 : dec;
+  if (!isFinite(v) || isNaN(v) || v < 0) return '-';
+  return (v * 100).toFixed(dec) + '%';
+}
+
+
+/* ============================================================
+   主计算函数
+   ============================================================ */
+function recalc() {
+
+  /* ---- 1. 生产工人 ---- */
+  var c3 = $v('c3'), d3 = $v('d3');
+  var e3 = c3 + d3;
+  $set('e3', fmt(e3));
+  $set('f3', e3 > 0 ? fmtPct(c3 / e3) : '-');
+  $set('g3', e3 > 0 ? fmtPct(d3 / e3) : '-');
+
+  /* ---- 18-24岁 ---- */
+  var c4 = $v('c4'), d4 = $v('d4');
+  $set('e4', fmt(c4 + d4));
+
+  /* ---- 最小年龄 ---- */
+  var c5 = $v('c5');
+  $set('e5', c5 > 0 ? fmt(c5) : '-');
+
+  /* ---- 外省工人 ---- */
+  var c6 = $v('c6'), d6 = $v('d6');
+  var e6 = c6 + d6;
+  $set('e6', fmt(e6));
+  if (e3 > 0) {
+    $set('f6', '外省占比 ' + Math.round(e6 / e3 * 100) + '%');
+  } else {
+    $set('f6', '外省占比 -');
+  }
+
+  /* ---- 过去12个月入职 ---- */
+  var c7a = $v('c7a'), d7a = $v('d7a');
+  $set('e7a', fmt(c7a + d7a));
+
+  /* ---- 达到退休年龄 ---- */
+  var c7b = $v('c7b'), d7b = $v('d7b');
+  var e7b = c7b + d7b;
+  $set('e7b', fmt(e7b));
+  $set('f7b', '男 ' + fmt(c7b) + ' / 女 ' + fmt(d7b) + ' / 合计 ' + fmt(e7b));
+
+  /* ---- 非生产 ---- */
+  var c9 = $v('c9'), d9 = $v('d9');   var e9  = c9  + d9;
+  var c10= $v('c10'),d10= $v('d10');  var e10 = c10 + d10;
+  var c11= $v('c11'),d11= $v('d11');  var e11 = c11 + d11;
+  $set('e9',  fmt(e9));
+  $set('e10', fmt(e10));
+  $set('e11', fmt(e11));
+
+  /* ---- 全厂总人数 I3 = E3 + E9 + E10 + E11 ---- */
+  var i3 = e3 + e9 + e10 + e11;
+  $set('i3', fmt(i3));
+
+  /* ---- 抽样 ---- */
+  $set('e15', fmt($v('c15') + $v('d15')));
+  $set('e16', fmt($v('c16') + $v('d16')));
+
+  /* ---- 离职率、缺勤率（输入为百分比数值，如 6.7 表示 6.7%）---- */
+  ['32','33','34','35','36','37'].forEach(function(r) {
+    var c = $v('c' + r), d = $v('d' + r);
+    $set('e' + r, fmt(c + d, 1) + '%');
+  });
+
+  /* ---- 天然气 m3 转 kWh ---- */
+  var gasCalorificValue = 40;
+  var gasCorrectionFactor = 1.02264;
+  var gasConversionFactor = 3.6;
+  var c40kwh = $v('c40') * gasCalorificValue * gasCorrectionFactor / gasConversionFactor;
+  var d40kwh = $v('d40') * gasCalorificValue * gasCorrectionFactor / gasConversionFactor;
+  $set('e40_kwh', c40kwh > 0 ? fmt(c40kwh, 0) : '-');
+  $set('f40_kwh', d40kwh > 0 ? fmt(d40kwh, 0) : '-');
+
+  /* ---- 法定最低工资 ---- */
+  var e49 = $v('e49');
+  var b49 = e49 / 21.75 / 8;   /* 时薪 */
+  var c49 = b49 * 8;            /* 日薪 */
+  var d49 = c49 * 5;            /* 周薪 */
+  var b50 = b49 * 1.5;          /* 加班费时薪 */
+  $set('b49', fmt(b49, 2));
+  $set('c49', fmt(c49, 2));
+  $set('d49', fmt(d49, 2));
+  $set('b50', fmt(b50, 2));
+
+  /* ---- 工厂实际最低工资 ---- */
+  var e54 = $v('e54');
+  var b54 = e54 / 21.75 / 8;
+  var c54 = b54 * 8;
+  var d54 = c54 * 5;
+  var b55 = b54 * 1.5;
+  $set('b54', fmt(b54, 2));
+  $set('c54', fmt(c54, 2));
+  $set('d54', fmt(d54, 2));
+  $set('b55', fmt(b55, 2));
+
+  /* ---- 证件与许可证 自动合成段落 ---- */
+  (function() {
+    function gv(id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+    function fmtDate(val) {
+      if (!val) return '';
+      // yyyy-mm-dd → dd/mm/yyyy
+      var parts = val.split('-');
+      if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+      return val;
+    }
+    function certLine(name, num, dateVal, validity) {
+      if (!num && !dateVal && !validity) return '';
+      var parts = [name + ':'];
+      if (num)      parts.push('Doc number: ' + num + '.');
+      if (dateVal)  parts.push('Issue date: ' + fmtDate(dateVal) + '.');
+      if (validity) parts.push('Valid ' + (validity === '无固定期限' || validity === '长期' ? 'indefinitely.' : 'until ' + validity + '.'));
+      return parts.join(' ');
+    }
+
+    var lines = [];
+    var l1 = certLine('Business license',              gv('b22'), gv('c22'), gv('d22'));
+    var l2 = certLine('Fire safety inspection report', gv('b23'), gv('c23'), gv('d23'));
+    var l3 = certLine('Building completion report',    gv('b24'), gv('c24'), gv('d24'));
+    var l4 = certLine('Other certificate (1)',         gv('b25'), gv('c25'), gv('d25'));
+    var l5 = certLine('Other certificate (2)',         gv('b26'), gv('c26'), gv('d26'));
+    var l6 = certLine('Other certificate (3)',         gv('b27'), gv('c27'), gv('d27'));
+
+    [l1, l2, l3, l4, l5, l6].forEach(function(l) { if (l) lines.push(l); });
+
+    var el = document.getElementById('cert-summary');
+    if (el) el.textContent = lines.join('\n');
+  })();
+
+  /* ---- 产品和生产流程 自动汇总段落 ---- */
+  (function() {
+    function gv(id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    var productProduced = gv('product-produced');
+    var mainOperations = gv('main-operations');
+    var productionLines = gv('production-lines');
+    var mainEquipment = gv('main-equipment');
+
+    var parts = [];
+    if (productProduced) parts.push('Products being produced: ' + productProduced + '.');
+    if (mainOperations) parts.push('Main operations: ' + mainOperations);
+    if (productionLines) parts.push('Number of production lines: ' + productionLines);
+    if (mainEquipment) parts.push('Main equipment used: ' + mainEquipment);
+
+    var el = document.getElementById('process-summary');
+    if (el) el.textContent = parts.join(' ');
+  })();
+}
+
+
+/* ============================================================
+   导出为 JSON
+   ============================================================ */
+function exportJSON() {
+  var data = collectFormData();
+  var json = JSON.stringify(data, null, 2);
+  var blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  var fname = (document.getElementById('factory-name').value || 'sedex') + '_' +
+              (document.getElementById('fill-date').value || new Date().toISOString().slice(0, 10)) + '.json';
+  a.download = fname;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ============================================================
+   导入 JSON
+   ============================================================ */
+function importJSON(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      applyFormData(data);
+      recalc();
+    } catch (err) {
+      alert('JSON 文件格式错误，无法导入。');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function copyCertSummary() {
+  var el = document.getElementById('cert-summary');
+  var text = el ? el.textContent.trim() : '';
+  if (!text) {
+    showCertCopyStatus('当前没有可复制内容', false);
+    return;
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(function() {
+        showCertCopyStatus('已复制', true);
+      })
+      .catch(function() {
+        fallbackCopyText(text);
+      });
+    return;
+  }
+
+  fallbackCopyText(text);
+}
+
+function copySummaryText(summaryId, statusId) {
+  var el = document.getElementById(summaryId);
+  var text = el ? el.textContent.trim() : '';
+  if (!text) {
+    showInlineStatus(statusId, '当前没有可复制内容', false);
+    return;
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(function() {
+        showInlineStatus(statusId, '已复制', true);
+      })
+      .catch(function() {
+        fallbackCopyText(text, statusId);
+      });
+    return;
+  }
+
+  fallbackCopyText(text, statusId);
+}
+
+function fallbackCopyText(text, statusId) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', 'readonly');
+  textarea.style.position = 'fixed';
+  textarea.style.top = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    document.execCommand('copy');
+    if (statusId) {
+      showInlineStatus(statusId, '已复制', true);
+    } else {
+      showCertCopyStatus('已复制', true);
+    }
+  } catch (err) {
+    if (statusId) {
+      showInlineStatus(statusId, '复制失败，请手动复制', false);
+    } else {
+      showCertCopyStatus('复制失败，请手动复制', false);
+    }
+  }
+
+  document.body.removeChild(textarea);
+}
+
+function showInlineStatus(statusId, message, isSuccess) {
+  var el = document.getElementById(statusId);
+  if (!el) return;
+
+  if (el.__statusTimer) {
+    clearTimeout(el.__statusTimer);
+  }
+
+  el.textContent = message;
+  el.style.color = isSuccess ? '#27ae60' : '#c0392b';
+  el.classList.add('show');
+
+  el.__statusTimer = setTimeout(function() {
+    el.classList.remove('show');
+  }, 1600);
+}
+
+function showCertCopyStatus(message, isSuccess) {
+  var el = document.getElementById('cert-copy-status');
+  if (!el) return;
+
+  if (showCertCopyStatus.timer) {
+    clearTimeout(showCertCopyStatus.timer);
+  }
+
+  el.textContent = message;
+  el.style.color = isSuccess ? '#27ae60' : '#c0392b';
+  el.classList.add('show');
+
+  showCertCopyStatus.timer = setTimeout(function() {
+    el.classList.remove('show');
+  }, 1600);
+}
+
+function toggleSubcontractDetails() {
+  var yes = document.getElementById('subcontract-yes');
+  var wrap = document.getElementById('subcontract-details');
+  if (!yes || !wrap) return;
+  wrap.style.display = yes.checked ? 'block' : 'none';
+}
+
+/* ============================================================
+   收集 / 应用 表单数据
+   ============================================================ */
+function collectFormData() {
+  var data = {};
+  document.querySelectorAll('input[id], textarea[id]').forEach(function(el) {
+    if (el.type === 'file') return;
+    if (el.type === 'radio' || el.type === 'checkbox') {
+      data[el.id] = el.checked;
+    } else {
+      data[el.id] = el.value;
+    }
+  });
+  return data;
+}
+
+function applyFormData(data) {
+  Object.keys(data).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el || el.type === 'file') return;
+    if (el.type === 'radio' || el.type === 'checkbox') {
+      el.checked = !!data[id];
+    } else {
+      el.value = data[id];
+    }
+  });
+  toggleSubcontractDetails();
+}
+
+/* ============================================================
+   重置表单
+   ============================================================ */
+function resetForm() {
+  if (!confirm('确定要清空所有数据吗？')) return;
+  document.querySelectorAll('input[id], textarea[id]').forEach(function(el) {
+    if (el.type === 'file') return;
+    if (el.type === 'radio' || el.type === 'checkbox') {
+      el.checked = false;
+    } else {
+      el.value = '';
+    }
+  });
+  toggleSubcontractDetails();
+  recalc();
+}
+
+
+/* ============================================================
+   初始化
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  // 检测是否刚执行过重置
+  if (window.__SEDEX_SAVED__) {
+    applyFormData(window.__SEDEX_SAVED__);
+  } else {
+    // 优先加载嵌入数据（从“保存为网页”打开时）
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = String(today.getMonth() + 1).padStart(2, '0');
+    var d = String(today.getDate()).padStart(2, '0');
+    var fillDateEl = document.getElementById('fill-date');
+    if (fillDateEl && !fillDateEl.value) {
+      fillDateEl.value = y + '-' + m + '-' + d;
+    }
+  }
+
+  recalc();
+  toggleSubcontractDetails();
+
+  document.querySelectorAll('input, textarea').forEach(function(el) {
+    if (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && ['text', 'number', 'date'].indexOf(el.type) !== -1)) {
+      el.addEventListener('focus', function() {
+        var self = this;
+        setTimeout(function() { self.select(); }, 0);
+      });
+    }
+    el.addEventListener('input', function() {
+      recalc();
+    });
+    if (el.type === 'radio' || el.type === 'checkbox') {
+      el.addEventListener('change', function() {
+        toggleSubcontractDetails();
+        recalc();
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

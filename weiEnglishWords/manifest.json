@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "English Collector",
+  "description": "Collect English words and sentences while browsing, then review and print.",
+  "version": "1.0.0",
+  "permissions": ["storage", "contextMenus"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "English Collector"
+  }
+}
