@@ -26,6 +26,7 @@ jobs:
       - name: Run crawler script
         run: |
           python escp_crawler.py
+        working-directory: ${{ github.workspace }}
 
       - name: Read HTML for email
         id: read_html
