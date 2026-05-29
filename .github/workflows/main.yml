@@ -1,37 +1,26 @@
-name: Check Website Update
+name: Simple Hello Action
 
 on:
   push:
     branches:
       - main
       - master
+  # 💡 增加这个配置，允许你在 GitHub 网页上通过点击按钮手动触发运行
+  workflow_dispatch: 
 
 jobs:
-  check-update:
+  say-hello:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
+      - name: Show Current Time
         run: |
-          python -m pip install --upgrade pip
-          # 💡 核心更新：引入 cloudscraper 依赖用来绕过五秒盾
-          pip install requests beautifulsoup4 cloudscraper 
+          echo "==== 正在初始化极简测试工作流 ===="
+          date
 
-      - name: Run crawler script
+      - name: Print Welcome Message
         run: |
-          # 💡 核心更新：使用 -u 参数强行开启实时日志刷新，方便排查
-          python -u escp_crawler.py
-
-      - name: Upload HTML Result
-        uses: actions/upload-artifact@v4
-        with:
-          name: escp-crawler-result
-          path: escp_auditors_simple.html
-          retention-days: 7
+          echo "========================================="
+          echo "  Hello! GitHub Action 运行成功！"
+          echo "  当前系统：Ubuntu Latest"
+          echo "  执行状态：完美，绝对没有卡死！"
+          echo "========================================="
