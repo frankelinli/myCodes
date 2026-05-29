@@ -1,17 +1,26 @@
-import requests
+import cloudscraper  # 💡 核心更新：替代 requests 避免被挂起
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 def generate_auditors_table():
-    # Fetch and parse the data
     url = "https://www.ethicalsupplychain.org/accredited-auditors-specialists"
     try:
-        response = requests.get(url)
+        print("正在向 ESCP 官网发起请求 (正在安全穿透 Cloudflare)...")
+        
+        # 创建带有防拦截策略的 scraper 实例
+        scraper = cloudscraper.create_scraper() 
+        
+        # 💡 核心更新：必须加 timeout=30。即便遇到极端网络波动，30秒也强行断开，坚决不卡死
+        response = scraper.get(url, timeout=30) 
+        
+        print(f"请求成功！响应状态码: {response.status_code}")
         response.raise_for_status()
+        
         soup = BeautifulSoup(response.text, 'html.parser')
         auditor_divs = soup.find_all('div', class_='quick-links-wrapper')
+        print(f"解析成功：在页面中捕获到 {len(auditor_divs)} 个审核机构节点。")
 
-        # Start building HTML table (简明醒目风格)
+        # 构建简明醒目的 HTML 表格
         html_output = f"""
         <div class="escp-auditors-table-simple">
             <h2 style='color:#1565c0;font-family:sans-serif;'>ESCP认证审核公司列表<br><span style='font-size:0.7em;color:#888;'>(更新于 {datetime.now().strftime('%Y-%m-%d')})</span></h2>
@@ -55,20 +64,17 @@ def generate_auditors_table():
         </div>
         """
 
-        # Save to HTML file
+        # 保存为本地 HTML 文件
         with open('escp_auditors_simple.html', 'w', encoding='utf-8') as f:
             f.write(html_output)
 
-        print("HTML table generated successfully as escp_auditors_simple.html")
+        print("成功生成 HTML 报告：escp_auditors_simple.html")
         return html_output
 
     except Exception as e:
-        print(f"Error occurred: {e}")
-        return None
+        print(f"❌ 运行发生致命错误: {e}")
+        # 抛出异常确保 GitHub Actions 在日志中能显性弹红叉，不隐瞒错误
+        raise 
 
-# Generate the table
-table_html = generate_auditors_table()
-
-if table_html:
-    print("\nSample HTML output:")
-    print(table_html[:500] + "...")
+# 执行
+generate_auditors_table()
