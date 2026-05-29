@@ -27,19 +27,10 @@ jobs:
         run: |
           python escp_crawler.py
 
-      - name: Send email notification (Simplified)
-        uses: dawidd6/action-send-mail@v3
+      # 【核心新增】将生成的 HTML 文件上传为 GitHub 运行产物
+      - name: Upload HTML Result
+        uses: actions/upload-artifact@v4
         with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          # 常用端口提示：如果是 SSL 填 465；如果是 STARTTLS 填 587
-          server_port: ${{ secrets.MAIL_PORT }}
-          username: ${{ secrets.MAIL_USERNAME }}
-          # 注意：这里的密码通常是邮箱生成的“客户端授权码/应用密码”，而不是登录密码
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: 'ESCP 爬虫测试'
-          to: wingxyq@qq.com
-          from: ${{ secrets.MAIL_FROM }}
-          secure: true # 【关键】强制开启 SSL/TLS 安全连接，避免握手失败
-          body: |
-            爬虫任务已运行完毕。
-            这是一封极简文本测试邮件，请检查数据是否生成。
+          name: escp-crawler-result # 下载时压缩包的名字
+          path: escp_auditors_simple.html # 你的爬虫生成的 HTML 文件路径
+          retention-days: 7 # 在 GitHub 上保留 7 天，超期自动删除，不占空间
