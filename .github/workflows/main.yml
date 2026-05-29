@@ -24,17 +24,13 @@ jobs:
           pip install requests beautifulsoup4
 
       - name: Run crawler script
+        # 如果你希望爬虫报错时流程直接停止（推荐），可以删掉下面这行 continue-on-error
+        continue-on-error: true 
         run: |
           python escp_crawler.py
         working-directory: ${{ github.workspace }}
-        continue-on-error: true
 
-      - name: Read HTML for email
-        id: read_html
-        run: |
-          echo "html<<EOF" >> $GITHUB_OUTPUT
-          cat escp_auditors_simple.html >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+      # 【优化点】删除了原先的 Read HTML 步骤，直接在邮件插件里引用文件
 
       - name: Send email notification
         uses: dawidd6/action-send-mail@v3
@@ -46,9 +42,9 @@ jobs:
           subject: 'ESCP自动爬虫已完成'
           to: wingxyq@qq.com
           from: ${{ secrets.MAIL_FROM }}
+          # 纯文本备用内容
           body: |
             GitHub Action 已自动完成爬虫任务并生成最新数据。
             请查看邮件正文获取最新审核公司列表。
-          body_html: ${{ steps.read_html.outputs.html }}
-        env:
-          HTML_FILE: escp_auditors_simple.html
+          # 【修改这里】直接通过 file:// 协议读取 HTML 文件，安全且支持大文件
+          html_body: file://escp_auditors_simple.html
