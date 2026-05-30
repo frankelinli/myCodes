@@ -53,3 +53,34 @@ coverage/
 
 # 其他你不想上传的文件放在这里
 csrwikiSite
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+*.pyo
+*.pyd
+.env
+.env.*
+venv/
+ENV/
+.venv/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# 日志
+*.log
+
+# 临时/备份文件
+*.bak
+
+# 输出文件夹
+exported_posts/
+exported_posts-csrwiki/
+
